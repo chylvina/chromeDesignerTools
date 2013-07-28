@@ -14,7 +14,13 @@
     "48": "img/icon_48.png",
     "128": "img/icon_128.png"
   },
-
+  "content_scripts": [
+    {
+      "js": [ "inc/jquery-1.7.1.min.js", "inc/jquery-special-scroll.js" ],
+      "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
+      "run_at": "document_end"
+    }
+  ],
   "browser_action": {
     "default_icon": {
         "19":   "img/icon_19.png",
