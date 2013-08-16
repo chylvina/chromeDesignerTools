@@ -7,15 +7,15 @@ var edHelper = {
 
   // listen for incoming messages
   messageListener: function(req, sender, sendResponse) {
-      switch(req.type) {
-        case 'helper-version':
-          ////console.log('helper version ' + edHelper.version + ' in tabid ' + req.tabid);
-          sendResponse({version: edHelper.version, tabid: req.tabid});
-          break;
-        case 'helper-change-shortcut':
-          edHelper.changeShortcut(req.shortcut, req.key);
-          break;
-      }
+    switch(req.type) {
+      case 'helper-version':
+        ////console.log('helper version ' + edHelper.version + ' in tabid ' + req.tabid);
+        sendResponse({version: edHelper.version, tabid: req.tabid});
+        break;
+      case 'helper-change-shortcut':
+        edHelper.changeShortcut(req.shortcut, req.key);
+        break;
+    }
   },
 
   // helper for adding shortcut

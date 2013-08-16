@@ -1,0 +1,18 @@
+{
+   "app": {
+      "background": {
+         "scripts": [ "background.js" ]
+      }
+   },
+   "description": "Screen Ruler",
+   "icons": {
+      "128": "icon-128.png",
+      "16": "icon-16.png"
+   },
+   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCxWN4DPrTTgUH0NJu7uEem/VVmDlwaNzEOLwr6VJLyFTY5slxzErtgFYV3od6bixSU5/dxzWkSEN3u8AnLi1UqWTDWY7vqotqdp4i/Djlk+ozJ3wpskiIYgZt0Hq/buis3gQ0TvdS9ERHJIyJCVz1FcXePX4LT8iAA1XOfQ9dOxQIDAQAB",
+   "minimum_chrome_version": "26",
+   "name": "Ruler",
+   "permissions": [  ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "0.2.1"
+}

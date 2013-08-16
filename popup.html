@@ -4,37 +4,37 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
   <link type="text/css" rel="stylesheet" href="inc/bootstrap/css/bootstrap.min.css">
-  <link type="text/css" rel="stylesheet" href="inc/font-awesome/css/font-awesome.min.css">
   <link type="text/css" rel="stylesheet" href="css/popup.css">
 
   <script type="text/javascript" src="js/vendor/jquery-1.10.2.min.js"></script>
   <script type="text/javascript" src="inc/bootstrap/js/bootstrap.min.js"></script>
-
   <script src="inc/pusher.color.min.js"></script>
-  <script src="popup.js"></script>
+  <script src="js/popup.js"></script>
 </head>
-<body id="popup">
+<body>
 <div id="tips" style="display: none;">
-  <div id="tipContent"><!--tips--></div>
-  <img id="loadingIcon" src="img/loader.gif"/>
+  This is an output.
 </div>
 <ul>
-  <li>
-    <a href="#" id="ref_line"><!-- 新建参考线 -->
-      <span id="ref_line_text">新建参考线</span>
-      <span class="shortcut" id="ref_line_sc"></span>
-    </a>
+  <li id="colorpicker">
+    <span class="title">取色器</span>
+    <span class="shortcut" id="colorpicker_sc"></span>
   </li>
-  <li>
-    <a href="#" id="eye_dropper"><!--取色器-->
-      <span id="eye_dropper_text">取色器</span>
-      <span class="shortcut" id="eye_dropper_sc"></span>
-    </a>
+  <li id="ref_line">
+    <span class="title">新建参考线</span>
+    <span class="shortcut"></span>
+  </li>
+  <li id="dister">
+    <span class="title">长度测量</span>
+    <span class="shortcut"></span>
   </li>
 </ul>
-<hr id="hRuler02"/>
-<div id="config-block">
-  <a href="#" id="config">设置</a><!--设置-->
-</div>
+<hr/>
+<ul>
+  <li id="config">
+    <span class="title">设置</span>
+    <span class="shortcut"></span>
+  </li>
+</ul>
 </body>
 </html>

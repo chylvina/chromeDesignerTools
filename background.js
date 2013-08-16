@@ -7,7 +7,7 @@ var DEFAULT_COLOR="#b48484";
 
 // for get element by id
 function $(id) {
-    return document.getElementById(id);
+  return document.getElementById(id);
 }
 
 // Returns -1 if value isn't in array.
@@ -46,7 +46,7 @@ var bg = {
     bg.canvasContext = null;
 
     bg.sendMessage({type: 'edropper-loaded'}, function(res) {
-      bg.dropperLoaded = true; 
+      bg.dropperLoaded = true;
       bg.dropperVersion = res.version;
       ////console.log('Picker is loaded with version ' + bg.dropperVersion);
     });
@@ -84,10 +84,10 @@ var bg = {
       port.onMessage.addListener(function(req) {
         switch(req.type) {
           // Taking screenshot for content script
-          case 'screenshot': 
+          case 'screenshot':
             ////console.log('received screenshot request');
             bg.capture(); break;
-          
+
           // Creating debug tab
           case 'debug-tab':
             ////console.log('received debug tab');
@@ -119,7 +119,7 @@ var bg = {
     if ( window.localStorage != null ) {
       if ( window.localStorage.keyActivate != undefined && window.localStorage.keyActivate != "" )
         hotkeyActivate = window.localStorage.keyActivate;
-    } 
+    }
 
     return {options: {hotkeyActivate: hotkeyActivate}};
   },
@@ -136,7 +136,7 @@ var bg = {
   setColor: function(req) {
     // we are storing color with first # character
     if ( ! req.color.rgbhex.match(/^#/) )
-        req.color.rgbhex = '#' + req.color.rgbhex;
+      req.color.rgbhex = '#' + req.color.rgbhex;
 
     bg.color = req.color.rgbhex;
     chrome.browserAction.setBadgeText({text: ' '});
@@ -178,27 +178,29 @@ var bg = {
     // inject javascript if needed
     if ( bg.dropperLoaded === false ) {
       ////console.log('trying to inject jquery');
-      chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "inc/jquery-1.7.1.min.js"}, function() {
+      chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "js/vendor/jquery-1.10.2.min.js"}, function() {
         ////console.log('jquery injected');
         chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "inc/jquery-special-scroll.js"}, function() {
           ////console.log('jquery-special-scroll injected');
-          chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "edropper2.js"}, function() {
-            ////console.log('edropper2 injected');
+          chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "js/vendor/fabric-all.min.js"}, function() {
+            chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "edropper2.js"}, function() {
+              ////console.log('edropper2 injected');
 
-            bg.pickupActivate();
+              bg.pickupActivate();
 
+            });
           });
         });
       });
 
-    // dropper is loaded but with old version
+      // dropper is loaded but with old version
     } else if ( bg.dropperVersion == undefined || bg.dropperVersion < NEED_DROPPER_VERSION ) {
       chrome.tabs.executeScript(bg.tab.id, {allFrames: true, file: "edropper2.js"}, function() {
         ////console.log('new version of edropper2 injected');
         bg.pickupActivate();
       });
 
-    // dropper is loaded, activate
+      // dropper is loaded, activate
     } else
       bg.pickupActivate();
   },
@@ -221,19 +223,19 @@ var bg = {
     ////console.log('capturing');
     try {
       chrome.tabs.captureVisibleTab(null, {format: bg.screenshotFormat, quality: 100}, bg.doCapture);
-    // fallback for chrome before 5.0.372.0
+      // fallback for chrome before 5.0.372.0
     } catch(e) {
       chrome.tabs.captureVisibleTab(null, bg.doCapture);
     }
   },
 
   getColor: function() {
-      return bg.color;
+    return bg.color;
   },
 
   doCapture: function(data) {
-      ////console.log('sending updated image');
-      bg.sendMessage({type: 'update-image', data: data}, function() {});
+    ////console.log('sending updated image');
+    bg.sendMessage({type: 'update-image', data: data}, function() {});
   },
 
   createDebugTab: function() {
@@ -268,13 +270,13 @@ var bg = {
   },
 
   clearHistory: function(sendResponse) {
-      ////console.log('clearing history');
-      window.localStorage.history = "[]";
-      bg.color = DEFAULT_COLOR;
+    ////console.log('clearing history');
+    window.localStorage.history = "[]";
+    bg.color = DEFAULT_COLOR;
 
-      sendResponse({state: 'OK'});
+    sendResponse({state: 'OK'});
   },
-  
+
   init: function() {
     // only if we have support for localStorage
     if ( window.localStorage != null ) {
@@ -289,7 +291,7 @@ var bg = {
 
     // settings from local storage
     if ( window.localStorage.history == undefined ) {
-        bg.clearHistory();
+      bg.clearHistory();
     } else if ( window.localStorage.history.length > 3 ) {
       var history = JSON.parse(window.localStorage.history);
       history = bg.addHashesToColorsInHistory(history);
@@ -302,7 +304,7 @@ var bg = {
 
     // we have to listen for messages
     bg.messageListener();
-    
+
     // act when tab is changed
     // TODO: call only when needed? this is now used also if picker isn't active
     bg.tabOnChangeListener();
@@ -356,17 +358,17 @@ var bg = {
   // in versions before 0.3.0 colors were stored without # hash in front
   // this fixes it
   addHashesToColorsInHistory: function(history) {
-      if ( history[0][0] != '#' ) {
-          for ( key in history ) {
-              history[key] = '#' + history[key];
-          }
+    if ( history[0][0] != '#' ) {
+      for ( key in history ) {
+        history[key] = '#' + history[key];
       }
-      window.localStorage.history = JSON.stringify(history);
-      return history;
+    }
+    window.localStorage.history = JSON.stringify(history);
+    return history;
   }
 };
 
 document.addEventListener('DOMContentLoaded', function () {
-    bg.init()
+  bg.init()
 });
 

@@ -1,0 +1,29 @@
+{
+   "background": {
+      "persistent": true,
+      "scripts": [ "js/lib/localStorage.js", "js/app/common_vars.js", "js/app/contextMenu.js" ]
+   },
+   "browser_action": {
+      "default_icon": "img/defaultIcon19x19.png",
+      "default_popup": "popup.html",
+      "default_title": "Tag Cloud Search + Translate"
+   },
+   "content_scripts": [ {
+      "js": [ "js/lib/jquery-1.8.3.min.js", "js/lib/localStorage.js", "js/app/content.js" ],
+      "matches": [ "*://*/*" ],
+      "run_at": "document_start"
+   } ],
+   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+   "description": "Tag Cloud Chrome Extension",
+   "icons": {
+      "128": "icon128.png"
+   },
+   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDC2xznPFlYpOdUIDWRsx5krTaDRv2iDecrp3XQSaeY3mQ7FTz99xsuC18q2Clu4EKKf69svpo5pQgLeMyPMB+D7JxGCPRBcK+LpqoHPhRLTeWO5cGUFmGXt0KPwvWb1c41mj86ReydqClZelWK1erhCnecXgwkhpUJOHmSmB1HPwIDAQAB",
+   "manifest_version": 2,
+   "minimum_chrome_version": "18",
+   "name": "Tag Cloud Search + Translate",
+   "options_page": "options.html",
+   "permissions": [ "http://*/*", "https://*/*", "unlimitedStorage", "tabs", "notifications", "contextMenus" ],
+   "update_url": "http://clients2.google.com/service/update2/crx",
+   "version": "2.0.5"
+}

@@ -59,8 +59,7 @@ var page = {
     }
 
     // create overlay div
-    $("body").before('<div id="eye-dropper-overlay" style="position: absolute; width: '+page.width+'px; height: '+page.height+'px; opacity: 1; background: none; border: none; z-index: 5000;"></div>');
-
+    $("body").before('<div id="eye-dropper-overlay" style="position: absolute; width: '+page.width+'px; height: '+page.height+'px; opacity: 1; background: none; border: none; z-index: 5000;"><canvas id="c" width="' + page.width + 'px" height="' + page.height + 'px"></canvas><canvas id="d" width="' + page.width + 'px" height="' + page.height + 'px"></canvas></div>');
     // insert tooltip and toolbox
     var inserted = ''
     if ( page.options.enableColorTooltip === true ) {
@@ -136,7 +135,8 @@ var page = {
     if (!page.dropperActivated)
       return;
 
-    page.tooltip(e);
+    //page.tooltip(e);
+    page.magnifier(e);
   },
 
   onMouseClick: function(e) {
@@ -146,7 +146,7 @@ var page = {
     e.preventDefault();
 
     page.dropperDeactivate();
-    page.sendMessage({type: "set-color", color: page.pickColor(e)});
+    page.sendMessage({type: "set-color", color: page.pickColor(e.pageX, e.pageY)});
   },
 
   onScrollStop: function() {
@@ -216,11 +216,96 @@ var page = {
   // MISC
   // ---------------------------------
 
+  magnifier: function(e) {
+    if (!page.dropperActivated || page.screenshoting)
+      return;
+
+    var canvas = new fabric.StaticCanvas('c', { renderOnAddRemove: false });
+    canvas.dispose();
+    var center = {x: e.pageX + 65, y: e.pageY + 70};
+    for(var x = -14; x < 15; x++) {
+      for(var y = -10; y < 11; y++) {
+        var color = page.pickColor(e.pageX + x, e.pageY + y);
+        var rect = new fabric.Rect({
+          left: center.x + x * 4,
+          top: center.y + y * 4,
+          fill: '#'+color.rgbhex,
+          width: 4,
+          height: 4
+        });
+        canvas.add(rect);
+      }
+    }
+
+    var rect = new fabric.Rect({
+      left: center.x,
+      top: center.y,
+      fill: 'rgba(0,0,0,0)',
+      strokeWidth: 2,
+      stroke: '#ffffff',
+      width: 116,
+      height: 84
+    });
+    canvas.add(rect);
+
+    var rect = new fabric.Rect({
+      left: center.x,
+      top: center.y,
+      fill: 'rgba(0,0,0,0)',
+      strokeWidth: 1,
+      stroke: 'rgba(0,0,0,100)',
+      width: 120,
+      height: 88
+    });
+    canvas.add(rect);
+
+    var rect = new fabric.Rect({
+      left: center.x,
+      top: center.y + 61,
+      fill: 'rgba(0,0,0,1)',
+      width: 122,
+      height: 33
+    });
+    canvas.add(rect);
+
+    var path = new fabric.Path('M -56 0 L 56 0 M 0 -40 L 0 40 z', {
+      left: center.x,
+      top: center.y,
+      stroke: 'rgba(76,198,255,0.9)',
+      strokeWidth: 4
+    });
+    canvas.add(path);
+
+    var theColor = page.pickColor(e.pageX, e.pageY);
+    var text1 = new fabric.Text('#' + String(theColor.rgbhex).toUpperCase(), {
+      left: center.x,
+      top: center.y + 53,
+      fontFamily: 'Arial',
+      fontSize: 12,
+      fill: '#ffffff'
+    });
+    canvas.add(text1);
+    var text2 = new fabric.Text(
+        'RGB:(' + theColor.r + ',' + theColor.g + ',' + theColor.b + ')',
+        {
+          left: center.x,
+          top: center.y + 68,
+          fontFamily: 'Arial',
+          textAlign: 'left',
+          fontSize: 12,
+          fill: '#ffffff'
+        });
+    canvas.add(text2);
+
+
+    canvas.renderAll();
+  },
+
   tooltip: function(e) {
     if (!page.dropperActivated || page.screenshoting)
       return;
 
-    var color = page.pickColor(e);
+    var color = page.pickColor(e.pageX, e.pageY);
     var fromTop = -15;
     var fromLeft = 10;
 
@@ -303,11 +388,11 @@ var page = {
   // COLORS
   // ---------------------------------
 
-  pickColor: function(e) {
+  pickColor: function(x, y) {
     if ( page.canvasData === null )
       return;
 
-    var canvasIndex = (e.pageX + e.pageY * page.canvas.width) * 4;
+    var canvasIndex = (x + y * page.canvas.width) * 4;
     ////console.log(e.pageX + ' ' + e.pageY + ' ' + page.canvas.width);
 
     var color = {
