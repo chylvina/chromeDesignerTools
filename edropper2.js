@@ -9,6 +9,9 @@ var page = {
   dropperActivated: false,
   screenWidth: 0,
   screenHeight: 0,
+  themeColor: '#f00',
+  canvasUpper: null,
+  canvasLower: null,
   options: {cursor: 'default', enableColorToolbox: true, enableColorTooltip: true, enableRightClickDeactivate: true},
 
   defaults: function() {
@@ -49,36 +52,6 @@ var page = {
     if (page.dropperActivated)
       return;
 
-    // load external css for cursor changes
-    var injectedCss = '<link id="eye-dropper-css-cursor" rel="stylesheet" type="text/css" href="'+chrome.extension.getURL('inject/anchor-cursor-'+page.options.cursor+'.css?0.3.0')+'" /><link id="eye-dropper-css" rel="stylesheet" type="text/css" href="'+chrome.extension.getURL('inject/edropper2.css?0.3.0')+'" />';
-
-    if ($("head").length == 0) { // rare cases as i.e. image page
-      $("body").before(injectedCss);
-    } else {
-      $("head").append(injectedCss);
-    }
-
-    // create overlay div
-    $("body").before('<div id="eye-dropper-overlay" style="position: absolute; width: '+page.width+'px; height: '+page.height+'px; opacity: 1; background: none; border: none; z-index: 5000;"><canvas id="c" width="' + page.width + 'px" height="' + page.height + 'px"></canvas><canvas id="d" width="' + page.width + 'px" height="' + page.height + 'px"></canvas></div>');
-    // insert tooltip and toolbox
-    var inserted = ''
-    if ( page.options.enableColorTooltip === true ) {
-      inserted += '<div id="color-tooltip"> </div>';
-    }
-    if ( page.options.enableColorToolbox === true ) {
-      inserted += '<div id="color-toolbox"><div id="color-toolbox-color"></div><div id="color-toolbox-text"></div></div>';
-    }
-    $("#eye-dropper-overlay").append(inserted);
-
-    if ( page.options.enableColorTooltip === true ) {
-      page.elColorTooltip = $('#color-tooltip');
-    }
-    if ( page.options.enableColorToolbox === true ) {
-      page.elColorToolbox = $('#color-toolbox');
-      page.elColorToolboxColor = $('#color-toolbox-color');
-      page.elColorToolboxText = $('#color-toolbox-text');
-    }
-
     ////console.log('activating page dropper');
     page.defaults();
 
@@ -105,8 +78,6 @@ var page = {
 
     // reset cursor changes
     $("#eye-dropper-overlay").css('cursor','default');
-    $("#eye-dropper-css").remove();
-    $("#eye-dropper-css-cursor").remove();
 
     page.dropperActivated = false;
 
@@ -118,13 +89,7 @@ var page = {
     }
     $(document).unbind('scrollstop', page.onScrollStop);
 
-    if ( page.options.enableColorTooltip === true ) {
-      page.elColorTooltip.remove();
-    }
-    if ( page.options.enableColorToolbox === true ) {
-      page.elColorToolbox.remove();
-    }
-    $("#eye-dropper-overlay").remove();
+    //$("#eye-dropper-overlay").remove();
   },
 
   // ---------------------------------
@@ -145,8 +110,9 @@ var page = {
 
     e.preventDefault();
 
-    page.dropperDeactivate();
-    page.sendMessage({type: "set-color", color: page.pickColor(e.pageX, e.pageY)});
+    //page.dropperDeactivate();
+
+    page.setColor(e);
   },
 
   onScrollStop: function() {
@@ -216,13 +182,52 @@ var page = {
   // MISC
   // ---------------------------------
 
+  drawColorIndicator: function(canvas, centerX, centerY) {
+    var rect = new fabric.Rect({
+      width: 2,
+      height: 2,
+      left: centerX -1,
+      top: centerY - 1,
+      stroke: page.themeColor,
+      fill: false,
+      selectable: false,
+      originX: 'left',
+      originY: 'top'
+    });
+    canvas.add(rect);
+
+    var path = new fabric.Path('M 0 0 L 20 20 z', {
+      left: centerX,
+      top: centerY,
+      stroke: page.themeColor,
+      strokeWidth: 1,
+      fill: false
+    });
+
+    canvas.add(path);
+  },
+
+  setColor: function(e) {
+    var canvas = page.canvasLower;
+
+    page.drawColorIndicator(canvas, e.pageX, e.pageY);
+
+    canvas.renderAll();
+  },
+
   magnifier: function(e) {
     if (!page.dropperActivated || page.screenshoting)
       return;
 
-    var canvas = new fabric.StaticCanvas('c', { renderOnAddRemove: false });
+    var canvas = page.canvasUpper;
     canvas.dispose();
     var center = {x: e.pageX + 65, y: e.pageY + 70};
+
+    if ( page.screenWidth - (e.pageX-page.XOffset) < 150 )
+      center.x = e.pageX - 60;
+    if ( page.screenHeight - (e.pageY-page.YOffset) < 180 )
+      center.y = e.pageY - 90;
+
     for(var x = -14; x < 15; x++) {
       for(var y = -10; y < 11; y++) {
         var color = page.pickColor(e.pageX + x, e.pageY + y);
@@ -249,22 +254,25 @@ var page = {
     canvas.add(rect);
 
     var rect = new fabric.Rect({
-      left: center.x,
-      top: center.y,
+      left: center.x - 60,
+      top: center.y - 44,
       fill: 'rgba(0,0,0,0)',
       strokeWidth: 1,
       stroke: 'rgba(0,0,0,100)',
-      width: 120,
-      height: 88
+      width: 119,
+      height: 87,
+      originX: 'left',
+      originY: 'top'
     });
     canvas.add(rect);
 
     var rect = new fabric.Rect({
       left: center.x,
-      top: center.y + 61,
+      top: center.y + 60,
       fill: 'rgba(0,0,0,1)',
-      width: 122,
-      height: 33
+      stroke: false,
+      width: 120,
+      height: 35
     });
     canvas.add(rect);
 
@@ -313,23 +321,6 @@ var page = {
       fromLeft = -20;
     if ( (e.pageY-page.YOffset) < page.screenHeight/2 )
       fromTop = 15;
-
-    // set tooltip
-    if ( page.options.enableColorTooltip === true ) {
-      page.elColorTooltip.css({
-        'background-color': '#'+color.rgbhex,
-        'top': e.pageY+fromTop,
-        'left': e.pageX+fromLeft,
-        'border-color': '#'+color.opposite
-      }).show();
-    }
-
-    // set toolbox
-    if ( page.options.enableColorToolbox === true ) {
-      page.elColorToolboxColor.css({'background-color': '#'+color.rgbhex});
-      page.elColorToolboxText.html('#'+color.rgbhex+'<br />rgb('+color.r+','+color.g+','+color.b+')');
-      page.elColorToolbox.show();
-    }
   },
 
   // return true if rectangle A is whole in rectangle B
@@ -463,27 +454,7 @@ var page = {
     $("#eye-dropper-overlay").css('cursor','progress')
 
     ////console.log('I want new screenshot');
-    // TODO: this is terrible. It have to be done better way
-    if ( page.options.enableColorTooltip === true && page.options.enableColorToolbox === true) {
-      page.elColorTooltip.hide(1, function() {
-        page.elColorToolbox.hide(1, function() {
-          page.sendMessage({type: 'screenshot'}, function() {});
-        });
-      });
-    }
-    else if ( page.options.enableColorTooltip === true ) {
-      page.elColorTooltip.hide(1, function() {
-        page.sendMessage({type: 'screenshot'}, function() {});
-      });
-    }
-    else if ( page.options.enableColorToolbox === true ) {
-      page.elColorToolbox.hide(1, function() {
-        page.sendMessage({type: 'screenshot'}, function() {});
-      });
-    }
-    else {
-      page.sendMessage({type: 'screenshot'}, function() {});
-    }
+    page.sendMessage({type: 'screenshot'}, function() {});
 
   },
 
@@ -527,14 +498,6 @@ var page = {
       page.screenshoting = false;
       $("#eye-dropper-overlay").css('cursor',page.options.cursor);
 
-      // re-enable tooltip and toolbox
-      if ( page.options.enableColorTooltip === true ) {
-        page.elColorTooltip.show(1);
-      }
-      if ( page.options.enableColorToolbox === true ) {
-        page.elColorToolbox.show(1);
-      }
-
       //page.sendMessage({type: 'debug-tab', image: page.canvas.toDataURL()}, function() {});
     }
     image.src = page.imageData;
@@ -542,6 +505,11 @@ var page = {
 
   init: function() {
     page.messageListener();
+
+    // create overlay div
+    $("body").before('<div id="eye-dropper-overlay" style="position: absolute; width: '+page.width+'px; height: '+page.height+'px; opacity: 1; background: none; border: none; z-index: 5000;"><canvas id="c" style="position: absolute;" width="' + page.width + 'px" height="' + page.height + 'px"></canvas><canvas id="d" style="position: absolute;" width="' + page.width + 'px" height="' + page.height + 'px"></canvas></div>');
+    page.canvasUpper = new fabric.StaticCanvas('c', { renderOnAddRemove: false });
+    page.canvasLower = new fabric.StaticCanvas('d', { renderOnAddRemove: false });
   }
 }
 

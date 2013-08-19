@@ -5,41 +5,21 @@
   <script type="text/javascript" src="../js/vendor/fabric-all.min.js"></script>
 </head>
 <body>
-<canvas id="c" width="500px" height="500px"></canvas>
+<canvas id="c" style="position: absolute;" width="500px" height="500px"></canvas>
+<canvas id="d" style="position: absolute" width="500px" height="500px"></canvas>
+<img src="bg.png" style="position: absolute; z-index: -1;">
 <script>
-  var i, dot,
-          t1, t2,
-          startTimer = function() {
-            t1 = new Date().getTime();
-            return t1;
-          },
-          stopTimer = function() {
-            t2 = new Date().getTime();
-            return t2 - t1;
-          };
-
-  var canvas = new fabric.StaticCanvas('c', { renderOnAddRemove: false });
-  //canvas.dispose();
-
-  var center = {x: 200, y: 200};
-
-  startTimer();
-  for(var x = -14; x < 15; x++) {
-    for(var y = -10; y < 11; y++) {
-      var color = '#0066cc';
-      var rect = new fabric.Rect({
-        left: center.x + x * 4,
-        top: center.y + y * 4,
-        fill: 'red',
-        width: 4,
-        height: 4
-      });
-      canvas.add(rect);
-    }
-  }
-  console.log(stopTimer());
-
-  canvas.renderAll();
+  var canvas = new fabric.StaticCanvas('c');
+  var path = new fabric.Path('M 0 0 L 50 50 z', {
+    left: 100,
+    top: 100,
+    stroke: 'red',
+    strokeWidth: 1,
+    fill: false,
+    originX: 'left',
+    originY: 'top'
+  });
+  canvas.add(path);
 </script>
 </body>
 </html>
