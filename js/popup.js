@@ -64,6 +64,16 @@ function init() {
     bgPage.bg.activate();
     window.close();
   });
+  $('#hRuler').click(function() {
+    _gaq.push(['_trackEvent', 'hRuler', 'clicked']);
+    bgPage.bg.hRulerActivate();
+    window.close();
+  });
+  $('#vRuler').click(function() {
+    _gaq.push(['_trackEvent', 'hRuler', 'clicked']);
+    bgPage.bg.vRulerActivate();
+    window.close();
+  });
 
   // check is capturable
   chrome.tabs.getSelected(null, function (tab) {

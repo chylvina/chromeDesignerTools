@@ -10,14 +10,12 @@
 <img src="bg.png" style="position: absolute; z-index: -1;">
 <script>
   var canvas = new fabric.StaticCanvas('c');
-  var path = new fabric.Path('M 0 0 L 50 50 z', {
-    left: 100,
-    top: 100,
+  var path = new fabric.Path('M 0 50 L 100 50 z', {
+    left: 0,
+    top: 0,
     stroke: 'red',
     strokeWidth: 1,
-    fill: false,
-    originX: 'left',
-    originY: 'top'
+    fill: false
   });
   canvas.add(path);
 </script>

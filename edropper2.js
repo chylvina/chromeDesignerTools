@@ -7,8 +7,10 @@ var page = {
   canvasBorders: 20,
   canvasData: null,
   dropperActivated: false,
-  screenWidth: 0,
-  screenHeight: 0,
+  rulerActivated: false,
+  rulerType: { H: 'h', V: 'v' },
+  screenWidth: window.innerWidth,
+  screenHeight: window.innerHeight,
   themeColor: '#f00',
   canvasUpper: null,
   canvasLower: null,
@@ -28,9 +30,22 @@ var page = {
     ////console.log('page activated');
     chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
       switch(req.type) {
-        case 'edropper-loaded': sendResponse({version: EDROPPER_VERSION}); break;
-        case 'pickup-activate': page.options = req.options; page.dropperActivate(); break;
-        case 'pickup-deactivate': page.dropperDeactivate(); break;
+        case 'edropper-loaded':
+          sendResponse({version: EDROPPER_VERSION});
+          break;
+        case 'pickup-activate':
+          page.options = req.options;
+          page.dropperActivate();
+          break;
+        case 'hruler-activate':
+          page.rulerActivate(page.rulerType.H);
+          break;
+        case 'vruler-activate':
+          page.rulerActivate(page.rulerType.V);
+          break;
+        case 'pickup-deactivate':
+          page.dropperDeactivate();
+          break;
         case 'update-image':
           ////console.log('background send me updated screenshot');
           page.imageData = req.data;
@@ -47,6 +62,24 @@ var page = {
   // ---------------------------------
   // DROPPER CONTROL 
   // ---------------------------------
+
+  rulerActivate: function(type) {
+    if(page.rulerActivated) {
+      return;
+    }
+
+    page.rulerActivated = true;
+
+    if(type == page.rulerType.H) {
+      document.addEventListener("mousemove", page.dragRulerH, false);
+      document.addEventListener("click", page.setRulerH, false);
+    }
+    else if(type == page.rulerType.V) {
+      document.addEventListener("mousemove", page.dragRulerV, false);
+      document.addEventListener("click", page.setRulerV, false);
+    }
+
+  },
 
   dropperActivate: function() {
     if (page.dropperActivated)
@@ -96,11 +129,33 @@ var page = {
   // EVENT HANDLING
   // ---------------------------------
 
+  dragRulerH: function(e) {
+    if (!page.rulerActivated)
+      return;
+
+    page.drawRuler(page.canvasUpper, e.pageX, e.pageY, page.rulerType.H, false);
+  },
+
+  setRulerH: function(e) {
+    page.canvasUpper.dispose();
+    page.drawRuler(page.canvasLower, e.pageX, e.pageY, page.rulerType.H, true);
+  },
+
+  dragRulerV: function(e) {
+    if (!page.rulerActivated)
+      return;
+
+    page.drawRuler(page.canvasUpper, e.pageX, e.pageY, page.rulerType.V, false);
+  },
+
+  setRulerV: function(e) {
+
+  },
+
   onMouseMove: function(e) {
     if (!page.dropperActivated)
       return;
 
-    //page.tooltip(e);
     page.magnifier(e);
   },
 
@@ -111,6 +166,7 @@ var page = {
     e.preventDefault();
 
     //page.dropperDeactivate();
+
 
     page.setColor(e);
   },
@@ -168,8 +224,8 @@ var page = {
     // width and height changed so we have to get new one
     page.width = $(document).width();
     page.height = $(document).height();
-    //page.screenWidth = window.innerWidth;
-    //page.screenHeight = window.innerHeight;
+    page.screenWidth = window.innerWidth;
+    page.screenHeight = window.innerHeight;
 
     // also don't forget to set overlay
     $("#eye-dropper-overlay").css('width',page.width).css('height',page.height);
@@ -181,6 +237,39 @@ var page = {
   // ---------------------------------
   // MISC
   // ---------------------------------
+
+  drawRuler: function(canvas, x, y, type, showdetail) {
+    if(type == page.rulerType.H) {
+      canvas.dispose();
+      var path = new fabric.Path('M 0 ' + y + ' L ' + page.screenWidth + ' ' + y + ' z', {
+        left: 0,
+        top: 0,
+        stroke: page.themeColor,
+        strokeWidth: 1,
+        fill: false
+      });
+
+      canvas.add(path);
+
+      if(showdetail == true) {
+        for(var i = 1; i < page.screenWidth / 10; i ++) {
+          var path = new fabric.Path('M ' + i * 10 + ' ' + y + ' L ' + i * 10 + ' ' + (y + 5) + ' z', {
+            left: 0,
+            top: 0,
+            stroke: page.themeColor,
+            strokeWidth: 1,
+            fill: false
+          });
+          canvas.add(path);
+        }
+      }
+
+      canvas.renderAll();
+    }
+    else if(type == page.rulerType.V) {
+
+    }
+  },
 
   drawColorIndicator: function(canvas, centerX, centerY) {
     var rect = new fabric.Rect({

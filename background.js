@@ -201,6 +201,30 @@ var bg = {
       bg.pickupActivate();
   },
 
+  hRulerActivate: function() {
+    // load options
+    /*cursor = (window.localStorage.dropperCursor === 'crosshair') ? 'crosshair' : 'default';
+    enableColorToolbox = (window.localStorage.enableColorToolbox === "false") ? false : true;
+    enableColorTooltip = (window.localStorage.enableColorTooltip === "false") ? false : true;
+    enableRightClickDeactivate = (window.localStorage.enableRightClickDeactivate === "false") ? false : true;*/
+
+    // activate picker
+    bg.sendMessage({type: 'hruler-activate', options: {  }}, function () {
+    });
+  },
+
+  vRulerActivate: function() {
+    // load options
+    /*cursor = (window.localStorage.dropperCursor === 'crosshair') ? 'crosshair' : 'default';
+     enableColorToolbox = (window.localStorage.enableColorToolbox === "false") ? false : true;
+     enableColorTooltip = (window.localStorage.enableColorTooltip === "false") ? false : true;
+     enableRightClickDeactivate = (window.localStorage.enableRightClickDeactivate === "false") ? false : true;*/
+
+    // activate picker
+    bg.sendMessage({type: 'vruler-activate', options: {  }}, function () {
+    });
+  },
+
   pickupActivate: function () {
     // load options
     cursor = (window.localStorage.dropperCursor === 'crosshair') ? 'crosshair' : 'default';

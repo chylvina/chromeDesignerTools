@@ -23,6 +23,29 @@
     "default_popup": "popup.html"
   },
 
+  "content_scripts": [
+    {
+      "js": [ "js/vendor/jquery-1.10.2.min.js" ],
+      "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
+      "run_at": "document_end"
+    },
+    {
+      "js": [ "inc/jquery-special-scroll.js" ],
+      "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
+      "run_at": "document_end"
+    },
+    {
+      "js": [ "js/vendor/fabric-all.min.js" ],
+      "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
+      "run_at": "document_end"
+    },
+    {
+      "js": [ "edropper2.js" ],
+      "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
+      "run_at": "document_end"
+    }
+  ],
+
   "permissions": [ "tabs", "http://*/*", "https://*/*" ],
 
   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
