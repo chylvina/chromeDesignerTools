@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0px;
+      padding: 0px;
+    }
+  </style>
+</head>
+<body>
+<div id="container"></div>
+<script src="../js/vendor/kinetic-v4.6.0.min.js"></script>
+<script defer="defer">
+  var stage = new Kinetic.Stage({
+    container: 'container',
+    width: 578,
+    height: 200
+  });
+
+  var layer = new Kinetic.Layer();
+
+  var rect = new Kinetic.Rect({
+    x: 239,
+    y: 75,
+    width: 100,
+    height: 50,
+    fill: '#0066cc',
+    stroke: 'black',
+    strokeWidth: 1
+  });
+
+  // add the shape to the layer
+  layer.add(rect);
+
+  var center = {x: 200, y: 200};
+  for(var x = -14; x < 15; x++) {
+    for(var y = -10; y < 11; y++) {
+      var rect = new Kinetic.Rect({
+        x: center.x + x * 4,
+        y: center.y + y * 4,
+        width: 4,
+        height: 4,
+        fill: '#0066cc'
+      });
+      layer.add(rect);
+    }
+  }
+
+  // add the layer to the stage
+  stage.add(layer);
+</script>
+</body>
+</html>

@@ -3,6 +3,12 @@
 <head>
   <title></title>
   <script type="text/javascript" src="../js/vendor/fabric-all.min.js"></script>
+  <style>
+    html, body {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
 </head>
 <body>
 <canvas id="c" style="position: absolute;" width="500px" height="500px"></canvas>
@@ -10,13 +16,16 @@
 <img src="bg.png" style="position: absolute; z-index: -1;">
 <script>
   var canvas = new fabric.StaticCanvas('c');
-  var path = new fabric.Path('M 0 50 L 100 50 z', {
-    left: 0,
-    top: 0,
+  var path = new fabric.Path('M 0 -40 L 0 0 L 100 0', {
+    left: 100,
+    top: 100,
+    fill: false,
     stroke: 'red',
     strokeWidth: 1,
-    fill: false
+    originX: 'left',
+    originY: 'bottom'
   });
+
   canvas.add(path);
 </script>
 </body>

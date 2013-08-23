@@ -11,9 +11,11 @@ var page = {
   rulerType: { H: 'h', V: 'v' },
   screenWidth: window.innerWidth,
   screenHeight: window.innerHeight,
+  magnifier: null,
   themeColor: '#f00',
-  canvasUpper: null,
-  canvasLower: null,
+  layerUpper: null,
+  layerLower: null,
+  stage: null,
   options: {cursor: 'default', enableColorToolbox: true, enableColorTooltip: true, enableRightClickDeactivate: true},
 
   defaults: function() {
@@ -133,19 +135,21 @@ var page = {
     if (!page.rulerActivated)
       return;
 
-    page.drawRuler(page.canvasUpper, e.pageX, e.pageY, page.rulerType.H, false);
+    page.layerUpper.clear();
+    page.drawRuler(page.layerUpper, e.pageX, e.pageY, page.rulerType.H, false);
   },
 
   setRulerH: function(e) {
-    page.canvasUpper.dispose();
-    page.drawRuler(page.canvasLower, e.pageX, e.pageY, page.rulerType.H, true);
+    page.layerUpper.dispose();
+    page.drawRuler(page.layerLower, e.pageX, e.pageY, page.rulerType.H, true);
   },
 
   dragRulerV: function(e) {
     if (!page.rulerActivated)
       return;
 
-    page.drawRuler(page.canvasUpper, e.pageX, e.pageY, page.rulerType.V, false);
+    page.layerUpper.dispose();
+    page.drawRuler(page.layerUpper, e.pageX, e.pageY, page.rulerType.V, false);
   },
 
   setRulerV: function(e) {
@@ -156,7 +160,7 @@ var page = {
     if (!page.dropperActivated)
       return;
 
-    page.magnifier(e);
+    page.dragMagnifier(e);
   },
 
   onMouseClick: function(e) {
@@ -166,6 +170,8 @@ var page = {
     e.preventDefault();
 
     //page.dropperDeactivate();
+
+    page.layerUpper.clear();
 
 
     page.setColor(e);
@@ -240,20 +246,21 @@ var page = {
 
   drawRuler: function(canvas, x, y, type, showdetail) {
     if(type == page.rulerType.H) {
-      canvas.dispose();
-      var path = new fabric.Path('M 0 ' + y + ' L ' + page.screenWidth + ' ' + y + ' z', {
+      var path = new Kinetic.Path('M 0 -2 L 0 0 L ' + page.screenWidth + ' 0', {
         left: 0,
-        top: 0,
-        stroke: page.themeColor,
+        top: y,
+        fill: false,
+        stroke: 'red',
         strokeWidth: 1,
-        fill: false
+        originX: 'left',
+        originY: 'top'
       });
 
       canvas.add(path);
 
       if(showdetail == true) {
         for(var i = 1; i < page.screenWidth / 10; i ++) {
-          var path = new fabric.Path('M ' + i * 10 + ' ' + y + ' L ' + i * 10 + ' ' + (y + 5) + ' z', {
+          var path = new Kinetic.Path('M ' + i * 10 + ' ' + y + ' L ' + i * 10 + ' ' + (y + 5) + ' z', {
             left: 0,
             top: 0,
             stroke: page.themeColor,
@@ -272,20 +279,18 @@ var page = {
   },
 
   drawColorIndicator: function(canvas, centerX, centerY) {
-    var rect = new fabric.Rect({
+    var rect = new Kinetic.Rect({
       width: 2,
       height: 2,
-      left: centerX -1,
-      top: centerY - 1,
+      x: centerX -1,
+      y: centerY - 1,
       stroke: page.themeColor,
-      fill: false,
-      selectable: false,
       originX: 'left',
       originY: 'top'
     });
     canvas.add(rect);
 
-    var path = new fabric.Path('M 0 0 L 20 20 z', {
+    var path = new Kinetic.Path('M 0 0 L 20 20 z', {
       left: centerX,
       top: centerY,
       stroke: page.themeColor,
@@ -297,19 +302,18 @@ var page = {
   },
 
   setColor: function(e) {
-    var canvas = page.canvasLower;
+    var canvas = page.layerLower;
 
     page.drawColorIndicator(canvas, e.pageX, e.pageY);
 
     canvas.renderAll();
   },
 
-  magnifier: function(e) {
+  dragMagnifier: function(e) {
     if (!page.dropperActivated || page.screenshoting)
       return;
 
-    var canvas = page.canvasUpper;
-    canvas.dispose();
+    var layer = page.layerUpper;
     var center = {x: e.pageX + 65, y: e.pageY + 70};
 
     if ( page.screenWidth - (e.pageX-page.XOffset) < 150 )
@@ -317,85 +321,93 @@ var page = {
     if ( page.screenHeight - (e.pageY-page.YOffset) < 180 )
       center.y = e.pageY - 90;
 
-    for(var x = -14; x < 15; x++) {
-      for(var y = -10; y < 11; y++) {
-        var color = page.pickColor(e.pageX + x, e.pageY + y);
-        var rect = new fabric.Rect({
-          left: center.x + x * 4,
-          top: center.y + y * 4,
-          fill: '#'+color.rgbhex,
-          width: 4,
-          height: 4
-        });
-        canvas.add(rect);
+    if(!page.magnifier) {
+      page.magnifier = new Kinetic.Group({
+        x: 0,
+        y: 0
+      });
+
+      for (var x = -14; x < 15; x++) {
+        for (var y = -10; y < 11; y++) {
+          var color = page.pickColor(e.pageX + x, e.pageY + y);
+          var rect = new Kinetic.Rect({
+            x: x * 4 - 3,
+            y: y * 4 - 3,
+            width: 4,
+            height: 4,
+            fill: '#' + color.rgbhex,
+            id: x + '*' + y,
+            name: 'colorRect'
+          });
+          page.magnifier.add(rect);
+        }
       }
+
+      page.magnifier.add(new Kinetic.Rect({
+            x: -61,
+            y: -45,
+            fill: 'rgba(0,0,0,0)',
+            strokeWidth: 2,
+            stroke: 'rgba(0,0,0,100)',
+            width: 120,
+            height: 88
+          })).add(new Kinetic.Rect({
+            x: -60,
+            y: -44,
+            strokeWidth: 2,
+            stroke: '#ffffff',
+            width: 118,
+            height: 86
+          })).add(new Kinetic.Rect({
+            x: -62,
+            y: 43,
+            fill: 'rgba(0,0,0,1)',
+            width: 122,
+            height: 36
+          })).add(new Kinetic.Text({
+            x: -54,
+            y: 48,
+            fontFamily: 'Arial',
+            fontSize: 12,
+            fill: '#ffffff',
+            text: 'abc'
+          })).add(new Kinetic.Text({
+            x: -54,
+            y: 63,
+            fontFamily: 'Arial',
+            textAlign: 'left',
+            fontSize: 12,
+            fill: '#ffffff',
+            text: 'def'
+          })).add(new Kinetic.Line({
+            points: [-58, 0, 56, 0],
+            stroke: 'rgba(76,198,255,0.9)',
+            strokeWidth: 4
+          })).add(new Kinetic.Line({
+            points: [0, -42, 0, 40],
+            stroke: 'rgba(76,198,255,0.9)',
+            strokeWidth: 4
+          }));
+
+      layer.add(page.magnifier);
     }
 
-    var rect = new fabric.Rect({
-      left: center.x,
-      top: center.y,
-      fill: 'rgba(0,0,0,0)',
-      strokeWidth: 2,
-      stroke: '#ffffff',
-      width: 116,
-      height: 84
-    });
-    canvas.add(rect);
-
-    var rect = new fabric.Rect({
-      left: center.x - 60,
-      top: center.y - 44,
-      fill: 'rgba(0,0,0,0)',
-      strokeWidth: 1,
-      stroke: 'rgba(0,0,0,100)',
-      width: 119,
-      height: 87,
-      originX: 'left',
-      originY: 'top'
-    });
-    canvas.add(rect);
-
-    var rect = new fabric.Rect({
-      left: center.x,
-      top: center.y + 60,
-      fill: 'rgba(0,0,0,1)',
-      stroke: false,
-      width: 120,
-      height: 35
-    });
-    canvas.add(rect);
-
-    var path = new fabric.Path('M -56 0 L 56 0 M 0 -40 L 0 40 z', {
-      left: center.x,
-      top: center.y,
-      stroke: 'rgba(76,198,255,0.9)',
-      strokeWidth: 4
-    });
-    canvas.add(path);
-
+    page.magnifier.setPosition(center.x, center.y);
     var theColor = page.pickColor(e.pageX, e.pageY);
-    var text1 = new fabric.Text('#' + String(theColor.rgbhex).toUpperCase(), {
-      left: center.x,
-      top: center.y + 53,
-      fontFamily: 'Arial',
-      fontSize: 12,
-      fill: '#ffffff'
+    page.magnifier.get('Text').each(function(text, n) {
+      if(n == 0) {
+        text.setText('#' + String(theColor.rgbhex).toUpperCase());
+      }
+      else if(n == 1) {
+        text.setText('RGB:(' + theColor.r + ',' + theColor.g + ',' + theColor.b + ')');
+      }
     });
-    canvas.add(text1);
-    var text2 = new fabric.Text(
-        'RGB:(' + theColor.r + ',' + theColor.g + ',' + theColor.b + ')',
-        {
-          left: center.x,
-          top: center.y + 68,
-          fontFamily: 'Arial',
-          textAlign: 'left',
-          fontSize: 12,
-          fill: '#ffffff'
-        });
-    canvas.add(text2);
+    page.magnifier.get('.colorRect').each(function(rect, index) {
+      var n = rect.getId().split('*');
+      rect.setFill('#' + page.pickColor(e.pageX + Number(n[0]), e.pageY + Number(n[1])).rgbhex);
+    })
 
-
-    canvas.renderAll();
+    layer.batchDraw();
   },
 
   tooltip: function(e) {
@@ -596,9 +608,18 @@ var page = {
     page.messageListener();
 
     // create overlay div
-    $("body").before('<div id="eye-dropper-overlay" style="position: absolute; width: '+page.width+'px; height: '+page.height+'px; opacity: 1; background: none; border: none; z-index: 5000;"><canvas id="c" style="position: absolute;" width="' + page.width + 'px" height="' + page.height + 'px"></canvas><canvas id="d" style="position: absolute;" width="' + page.width + 'px" height="' + page.height + 'px"></canvas></div>');
-    page.canvasUpper = new fabric.StaticCanvas('c', { renderOnAddRemove: false });
-    page.canvasLower = new fabric.StaticCanvas('d', { renderOnAddRemove: false });
+    $("body").before('<div id="eye-dropper-overlay" style="position: absolute; width: '+page.width+'px; height: '+page.height+'px; opacity: 1; background: none; border: none; z-index: 5000;"></div>');
+
+    var stage = new Kinetic.Stage({
+      container: 'eye-dropper-overlay',
+      width: page.width,
+      height: page.height
+    });
+
+    page.layerUpper = new Kinetic.Layer();
+    stage.add(page.layerUpper);
+    page.layerLower = new Kinetic.Layer();
+    stage.add(page.layerLower);
   }
 }
 

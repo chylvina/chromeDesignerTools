@@ -35,7 +35,7 @@
       "run_at": "document_end"
     },
     {
-      "js": [ "js/vendor/fabric-all.min.js" ],
+      "js": [ "js/vendor/kinetic-v4.6.0.min.js" ],
       "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
       "run_at": "document_end"
     },

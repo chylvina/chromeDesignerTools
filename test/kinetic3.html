@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0px;
+      padding: 0px;
+    }
+  </style>
+</head>
+<body>
+<div id="container"></div>
+<script src="../js/vendor/kinetic-v4.6.0.min.js"></script>
+<script defer="defer">
+  var stage = new Kinetic.Stage({
+    container: 'container',
+    width: 578,
+    height: 200
+  });
+
+  var layer = new Kinetic.Layer();
+
+  var poly = new Kinetic.Polygon({
+    points: [73, 192, 73, 160, 340, 23, 500, 109, 499, 139, 342, 93],
+    fill: '#00D2FF',
+    stroke: 'black',
+    strokeWidth: 5
+  });
+
+  // add the shape to the layer
+  layer.add(poly);
+
+  // add the layer to the stage
+  stage.add(layer);
+</script>
+</body>
+</html>
