@@ -60,35 +60,74 @@
 
   var group = new Kinetic.Group({
     x: 100,
-    y: 100
+    y: 100,
+    rotation: -Math.atan(3/4)
   });
 
-  var line1 = new Kinetic.Line({
+  group.add(new Kinetic.Line({
     points: [0, 0, 4, 3],
     stroke: 'red',
     strokeWidth: 1
+  })).add(new Kinetic.Line({
+            points: [0, 0, 4, -3],
+            stroke: 'red',
+            strokeWidth: 1
+          })).add(new Kinetic.Line({
+            points: [0, 0, 50, 0],
+            stroke: 'red',
+            strokeWidth: 1
+          }));
+
+  //group.rotate(-Math.atan(3/4));
+
+  var group2 = new Kinetic.Group({
+    x: 100,
+    y: 100
   });
+  group2.add(new Kinetic.Rect({
+            x: 39,
+            y: -35,
+            width: 10,
+            height: 10,
+            fill: 'red'
+          })).
+          add(new Kinetic.Rect({
+            x: 40,
+            y: -34,
+            width: 8,
+            height: 8,
+            fill: '#0066cc'
+          })).add(new Kinetic.Text({
+            x: 52,
+            y: -36,
+            fontFamily: 'Arial',
+            fontSize: 12,
+            fill: '#ffffff',
+            stroke: '#ffffff',
+            strokeWidth: 2,
+            text: '#FFFFFF'
+          })).add(new Kinetic.Text({
+            x: 52,
+            y: -36,
+            fontFamily: 'Arial',
+            fontSize: 12,
+            fill: 'red',
+            text: '#FFFFFF'
+          }));
 
-  var line2 = new Kinetic.Line({
-    points: [0, 0, 4, -3],
-    stroke: 'red',
-    strokeWidth: 1
-  });
-
-  var line3 = new Kinetic.Line({
-    points: [0, 0, 100, 0],
-    stroke: 'red',
-    strokeWidth: 1
-  });
-
-  group.rotate(45);
-
-  group.add(line1);
-  group.add(line2);
-  group.add(line3);
+  layer.add(new Kinetic.Text({
+    x: 100 - 24,
+    y: 100 - 6,
+    fontFamily: 'Arial',
+    fontSize: 12,
+    fill: 'red',
+    text: '#FFFFFF',
+    align: 'right'
+  }));
 
   stage.add(layer);
   layer.add(group);
+  layer.add(group2);
   layer.batchDraw();
 </script>
 </body>

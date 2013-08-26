@@ -25,7 +25,17 @@
 
   "content_scripts": [
     {
-      "js": [ "js/vendor/jquery-1.10.2.min.js" ],
+      "css": [ "css/inject.css" ],
+      "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
+      "run_at": "document_end"
+    },
+    {
+      "js": [ "inc/shortcut.js" ],
+      "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
+      "run_at": "document_end"
+    },
+    {
+      "js": [ "inc/jquery-1.7.1.min.js" ],
       "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
       "run_at": "document_end"
     },

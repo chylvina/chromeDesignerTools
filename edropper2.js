@@ -8,10 +8,14 @@ var page = {
   canvasData: null,
   dropperActivated: false,
   rulerActivated: false,
+  magnifierActivated: false,
+  hidden: false,
   rulerType: { H: 'h', V: 'v' },
   screenWidth: window.innerWidth,
   screenHeight: window.innerHeight,
   magnifier: null,
+  previewRulerH: null,
+  previewRulerV: null,
   themeColor: '#f00',
   layerUpper: null,
   layerLower: null,
@@ -71,27 +75,65 @@ var page = {
     }
 
     page.rulerActivated = true;
+    page.screenChanged();
+    page.magnifierActivate();
 
     if(type == page.rulerType.H) {
+      if(!page.previewRulerH) {
+        page.previewRulerH = new Kinetic.Line({
+          points: [0, 0.5, page.width, 0.5],
+          stroke: page.themeColor,
+          strokeWidth: 1
+        });
+      }
+
+      page.layerUpper.add(page.previewRulerH);
+
       document.addEventListener("mousemove", page.dragRulerH, false);
       document.addEventListener("click", page.setRulerH, false);
     }
     else if(type == page.rulerType.V) {
+      if(!page.previewRulerV) {
+        page.previewRulerV = new Kinetic.Line({
+          points: [0.5, 0, 0.5, page.height],
+          stroke: page.themeColor,
+          strokeWidth: 1
+        });
+      }
+
+      page.layerUpper.add(page.previewRulerV);
+
       document.addEventListener("mousemove", page.dragRulerV, false);
       document.addEventListener("click", page.setRulerV, false);
     }
+  },
 
+  rulerDeactivate: function() {
+    if(!page.rulerActivated) {
+      return;
+    }
+
+    page.rulerActivated = false;
+
+    page.layerUpper.remove(page.previewRulerH);
+    page.layerUpper.remove(page.previewRulerV);
+
+    page.magnifierDeactivate();
+
+    document.removeEventListener("mousemove", page.dragRulerH, false);
+    document.removeEventListener("click", page.setRulerH, false);
+    document.removeEventListener("mousemove", page.dragRulerV, false);
+    document.removeEventListener("click", page.setRulerV, false);
   },
 
   dropperActivate: function() {
     if (page.dropperActivated)
       return;
 
-    ////console.log('activating page dropper');
-    page.defaults();
-
     page.dropperActivated = true;
     page.screenChanged();
+
+    page.magnifierActivate();
 
     // set listeners
     $(document).bind('scrollstop', page.onScrollStop);
@@ -100,21 +142,18 @@ var page = {
     if ( page.options.enableRightClickDeactivate === true ) {
       document.addEventListener("contextmenu", page.onContextMenu, false);
     }
-    // enable keyboard shortcuts
-    page.shortcuts(true);
   },
 
   dropperDeactivate: function() {
     if (!page.dropperActivated)
       return;
 
-    // disable keyboard shortcuts
-    page.shortcuts(false);
-
     // reset cursor changes
     $("#eye-dropper-overlay").css('cursor','default');
 
     page.dropperActivated = false;
+
+    page.magnifierDeactivate();
 
     ////console.log('deactivating page dropper');
     document.removeEventListener("mousemove", page.onMouseMove, false);
@@ -123,8 +162,6 @@ var page = {
       document.removeEventListener("contextmenu", page.onContextMenu, false);
     }
     $(document).unbind('scrollstop', page.onScrollStop);
-
-    //$("#eye-dropper-overlay").remove();
   },
 
   // ---------------------------------
@@ -135,32 +172,68 @@ var page = {
     if (!page.rulerActivated)
       return;
 
-    page.layerUpper.clear();
-    page.drawRuler(page.layerUpper, e.pageX, e.pageY, page.rulerType.H, false);
+    page.previewRulerH.setPosition(0, e.pageY);
   },
 
   setRulerH: function(e) {
-    page.layerUpper.dispose();
-    page.drawRuler(page.layerLower, e.pageX, e.pageY, page.rulerType.H, true);
+    var group = new Kinetic.Group();
+    group.add(new Kinetic.Line({
+      points: [0, 0.5, page.width, 0.5],
+      stroke: page.themeColor,
+      strokeWidth: 1
+    }));
+    for(var i = 1; i < page.width / 10; i ++) {
+      var l = 4.5;
+      if(i%10 == 0) {
+        l = 8.5;
+      }
+
+      group.add(new Kinetic.Line({
+        points: [i*10 + 0.5, 0.5, i*10 + 0.5, l],
+        stroke: page.themeColor,
+        strokeWidth: 1
+      }));
+    }
+    group.setPosition(0, e.pageY);
+    page.layerLower.add(group);
+    page.layerLower.batchDraw();
   },
 
   dragRulerV: function(e) {
     if (!page.rulerActivated)
       return;
 
-    page.layerUpper.dispose();
-    page.drawRuler(page.layerUpper, e.pageX, e.pageY, page.rulerType.V, false);
+    page.previewRulerV.setPosition(e.pageX, 0);
   },
 
   setRulerV: function(e) {
+    var group = new Kinetic.Group();
+    group.add(new Kinetic.Line({
+      points: [0.5, 0, 0.5, page.height],
+      stroke: page.themeColor,
+      strokeWidth: 1
+    }));
+    for(var i = 1; i < page.height / 10; i ++) {
+      var l = 4.5;
+      if(i%10 == 0) {
+        l = 8.5;
+      }
 
+      group.add(new Kinetic.Line({
+        points: [0.5, i*10 + 0.5, l, i*10 + 0.5],
+        stroke: page.themeColor,
+        strokeWidth: 1
+      }));
+    }
+    group.setPosition(e.pageX, 0);
+    page.layerLower.add(group);
+    page.layerLower.batchDraw();
   },
 
   onMouseMove: function(e) {
     if (!page.dropperActivated)
       return;
 
-    page.dragMagnifier(e);
   },
 
   onMouseClick: function(e) {
@@ -190,22 +263,6 @@ var page = {
      return;
 
   },
-
-  // keyboard shortcuts
-  // enable with argument as true, disable with false
-  shortcuts: function(start) {
-    // enable shortcuts
-    if ( start == true ) {
-      shortcut.add('Esc', function(evt) { page.dropperDeactivate(); });
-      shortcut.add('U', function(evt) { page.screenChanged(true); });
-
-    // disable shortcuts
-    } else {
-      shortcut.remove('U');
-      shortcut.remove('Esc');
-    }
-  },
-
 
   // right click
   onContextMenu: function(e) {
@@ -244,19 +301,9 @@ var page = {
   // MISC
   // ---------------------------------
 
-  drawRuler: function(canvas, x, y, type, showdetail) {
+  drawRuler: function(layer, x, y, type, showdetail) {
     if(type == page.rulerType.H) {
-      var path = new Kinetic.Path('M 0 -2 L 0 0 L ' + page.screenWidth + ' 0', {
-        left: 0,
-        top: y,
-        fill: false,
-        stroke: 'red',
-        strokeWidth: 1,
-        originX: 'left',
-        originY: 'top'
-      });
-
-      canvas.add(path);
+      page.previewRulerH.setPosition();
 
       if(showdetail == true) {
         for(var i = 1; i < page.screenWidth / 10; i ++) {
@@ -267,59 +314,101 @@ var page = {
             strokeWidth: 1,
             fill: false
           });
-          canvas.add(path);
+          layer.add(path);
         }
       }
 
-      canvas.renderAll();
+      layer.renderAll();
     }
     else if(type == page.rulerType.V) {
 
     }
   },
 
-  drawColorIndicator: function(canvas, centerX, centerY) {
-    var rect = new Kinetic.Rect({
-      width: 2,
-      height: 2,
-      x: centerX -1,
-      y: centerY - 1,
-      stroke: page.themeColor,
-      originX: 'left',
-      originY: 'top'
-    });
-    canvas.add(rect);
+  drawColorIndicator: function(layer, centerX, centerY) {
+    var color = '#' + (page.pickColor(centerX, centerY).rgbhex).toUpperCase();
 
-    var path = new Kinetic.Path('M 0 0 L 20 20 z', {
-      left: centerX,
-      top: centerY,
-      stroke: page.themeColor,
-      strokeWidth: 1,
-      fill: false
-    });
+    var xFactor = 1,
+        yFactor = 1;
 
-    canvas.add(path);
+    if ( page.screenWidth - (centerX-page.XOffset) < 150 )
+      xFactor = -1;
+    if ((centerY-page.YOffset) < 180 )
+      yFactor = -1;
+
+    var group1 = new Kinetic.Group({
+      x: centerX,
+      y: centerY,
+      rotation: -Math.atan(3/4 * (yFactor*xFactor)) + ((xFactor == -1) ? Math.PI : 0)
+    });
+    group1.add(new Kinetic.Line({
+          points: [0, 0, 4, 3],
+          stroke: page.themeColor,
+          strokeWidth: 1
+        })).add(new Kinetic.Line({
+          points: [0, 0, 4, -3],
+          stroke: page.themeColor,
+          strokeWidth: 1
+        })).add(new Kinetic.Line({
+          points: [0, 0, 50, 0],
+          stroke: page.themeColor,
+          strokeWidth: 1
+        }));
+
+    var group2 = new Kinetic.Group({
+      x: centerX + 40*xFactor,
+      y: centerY - 30*yFactor
+    });
+    group2.add(new Kinetic.Rect({
+          x: -5,
+          y: -5,
+          width: 10,
+          height: 10,
+          fill: 'red'
+        })).add(new Kinetic.Rect({
+          x: -4,
+          y: -4,
+          width: 8,
+          height: 8,
+          fill: color
+        }));
+
+    var group3 = new Kinetic.Group({
+      x: centerX + 75*xFactor,
+      y: centerY - 30*yFactor
+    });
+    group3.add(new Kinetic.Text({
+          x: -24,
+          y: -6,
+          fontFamily: 'Arial',
+          fontSize: 12,
+          fill: '#ffffff',
+          stroke: '#ffffff',
+          strokeWidth: 2,
+          text: color
+        })).add(new Kinetic.Text({
+          x: -24,
+          y: -6,
+          fontFamily: 'Arial',
+          fontSize: 12,
+          fill: page.themeColor,
+          text: color
+        }));
+
+    layer.add(group1).add(group2).add(group3);
+    layer.batchDraw();
   },
 
   setColor: function(e) {
-    var canvas = page.layerLower;
-
-    page.drawColorIndicator(canvas, e.pageX, e.pageY);
-
-    canvas.renderAll();
+    page.drawColorIndicator(page.layerLower, e.pageX, e.pageY);
   },
 
-  dragMagnifier: function(e) {
-    if (!page.dropperActivated || page.screenshoting)
+  magnifierActivate: function() {
+    if(page.magnifierActivated) {
       return;
+    }
 
-    var layer = page.layerUpper;
-    var center = {x: e.pageX + 65, y: e.pageY + 70};
-
-    if ( page.screenWidth - (e.pageX-page.XOffset) < 150 )
-      center.x = e.pageX - 60;
-    if ( page.screenHeight - (e.pageY-page.YOffset) < 180 )
-      center.y = e.pageY - 90;
+    page.magnifierActivated = true;
 
     if(!page.magnifier) {
       page.magnifier = new Kinetic.Group({
@@ -329,13 +418,12 @@ var page = {
 
       for (var x = -14; x < 15; x++) {
         for (var y = -10; y < 11; y++) {
-          var color = page.pickColor(e.pageX + x, e.pageY + y);
           var rect = new Kinetic.Rect({
             x: x * 4 - 3,
             y: y * 4 - 3,
             width: 4,
             height: 4,
-            fill: '#' + color.rgbhex,
+            fill: '#ffffff',
             id: x + '*' + y,
             name: 'colorRect'
           });
@@ -380,17 +468,41 @@ var page = {
             fill: '#ffffff',
             text: 'def'
           })).add(new Kinetic.Line({
-            points: [-58, 0, 56, 0],
+            points: [-58, -1, 56, -1],
             stroke: 'rgba(76,198,255,0.9)',
             strokeWidth: 4
           })).add(new Kinetic.Line({
-            points: [0, -42, 0, 40],
+            points: [-1, -42, -1, 40],
             stroke: 'rgba(76,198,255,0.9)',
             strokeWidth: 4
           }));
-
-      layer.add(page.magnifier);
     }
+
+    page.layerUpper.add(page.magnifier);
+    document.addEventListener("mousemove", page.dragMagnifier, false);
+  },
+
+  magnifierDeactivate: function() {
+    if(!page.magnifierActivated) {
+      return;
+    }
+
+    page.magnifierActivated = false;
+
+    page.layerUpper.remove(page.magnifier);
+    document.removeEventListener("mousemove", page.dragMagnifier, false);
+  },
+
+  dragMagnifier: function(e) {
+    if (page.screenshoting)
+      return;
+
+    var center = {x: e.pageX + 65, y: e.pageY + 70};
+
+    if ( page.screenWidth - (e.pageX-page.XOffset) < 150 )
+      center.x = e.pageX - 60;
+    if ( page.screenHeight - (e.pageY-page.YOffset) < 180 )
+      center.y = e.pageY - 90;
 
     page.magnifier.setPosition(center.x, center.y);
     var theColor = page.pickColor(e.pageX, e.pageY);
@@ -405,23 +517,9 @@ var page = {
     page.magnifier.get('.colorRect').each(function(rect, index) {
       var n = rect.getId().split('*');
       rect.setFill('#' + page.pickColor(e.pageX + Number(n[0]), e.pageY + Number(n[1])).rgbhex);
-    })
+    });
 
-    layer.batchDraw();
-  },
-
-  tooltip: function(e) {
-    if (!page.dropperActivated || page.screenshoting)
-      return;
-
-    var color = page.pickColor(e.pageX, e.pageY);
-    var fromTop = -15;
-    var fromLeft = 10;
-
-    if ( (e.pageX-page.XOffset) > page.screenWidth/2 )
-      fromLeft = -20;
-    if ( (e.pageY-page.YOffset) < page.screenHeight/2 )
-      fromTop = 15;
+    page.layerUpper.batchDraw();
   },
 
   // return true if rectangle A is whole in rectangle B
@@ -532,9 +630,6 @@ var page = {
   },
 
   screenChanged: function(force) {
-    if (!page.dropperActivated)
-      return;
-
     page.YOffset = $(document).scrollTop();
     page.XOffset = $(document).scrollLeft();
 
@@ -604,11 +699,54 @@ var page = {
     image.src = page.imageData;
   },
 
+  show: function() {
+    page.hidden = false;
+    $('#eye-dropper-overlay').show();
+    $('#quickmarkup-esc').text('Hide');
+  },
+
+  hide: function() {
+    page.hidden = true;
+    $('#eye-dropper-overlay').hide();
+    $('#quickmarkup-esc').text('Show');
+  },
+
   init: function() {
+    page.activated = true;
+
     page.messageListener();
 
     // create overlay div
-    $("body").before('<div id="eye-dropper-overlay" style="position: absolute; width: '+page.width+'px; height: '+page.height+'px; opacity: 1; background: none; border: none; z-index: 5000;"></div>');
+    $("body").before('<div id="quickmarkup-c1">' +
+        '<div id="quickmarkup-c2"><div id="quickmarkup-c3">' +
+        '<span id="quickmarkup-tip">' + "Working" +
+        '</span><span id="quickmarkup-esc">' + 'Hide' +'</span>' +
+        '</div><img id="quickmarkup-close" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALFJREFUeNqMkk0OAUEQhSvE2PgNzmVOYCEWbkTib2QwiMS1LIkDjNe8SiqlJV7yLebVT1dXj8hHYzADDflWC+RgqsYI3EEJdkxQdcCJsQcby4KGEroloA72LrbWLrkLbIn1jqCrRzdB5hIsZ5usqvJIn1xwvLcqpiD5saUy4kkfXP8daRBJ3oBVpKgnvL0NHDheLbK9ZSiYgCeNi9tG2zS8gaGYXyPjm3gFbw7S8PESYACUf0fkQ53xHwAAAABJRU5ErkJggg=="></div></div>')
+        .before('<div id="eye-dropper-overlay" style="position: absolute; width: '+page.width+'px; height: '+page.height+'px; opacity: 1; background: none; border: none; z-index: 5000;"></div>');
+
+    var onCancel = function() {
+      if(page.dropperActivated) {
+        page.dropperDeactivate();
+      }
+      else if(page.rulerActivated) {
+        page.rulerDeactivate();
+      }
+      else {
+        if(page.hidden) {
+          page.show();
+        }
+        else {
+          page.hide();
+        }
+      }
+    }
+
+    $('#quickmarkup-esc').click(onCancel);
+    shortcut.add('Esc', onCancel);
+
+    $('#quickmarkup-close').click(function() {
+      $('#quickmarkup-c1').hide();
+    });
 
     var stage = new Kinetic.Stage({
       container: 'eye-dropper-overlay',
@@ -617,9 +755,10 @@ var page = {
     });
 
     page.layerUpper = new Kinetic.Layer();
-    stage.add(page.layerUpper);
     page.layerLower = new Kinetic.Layer();
-    stage.add(page.layerLower);
+    stage.add(page.layerLower).add(page.layerUpper);
+
+    page.defaults();
   }
 }
 
