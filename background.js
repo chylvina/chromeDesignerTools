@@ -1,10 +1,3 @@
-var BG_VERSION = 7;
-var NEED_DROPPER_VERSION = 8;
-var NEED_ED_HELPER_VERSION = 6;
-var DEFAULT_COLOR = "#b48484";
-
-// jQuery like functions
-
 // for get element by id
 function $(id) {
   return document.getElementById(id);
@@ -24,13 +17,9 @@ var bg = {
   tab: 0,
   tabs: [],
   helperFile: "js/ed_helper.js",
-  version: BG_VERSION,
   dropperLoaded: false,
-  dropperVersion: 0,
   screenshotData: '',
   screenshotFormat: 'png',
-  canvas: document.createElement("canvas"),
-  canvasContext: null,
   debugImage: null,
   debugTab: 0,
   color: null,
@@ -40,15 +29,9 @@ var bg = {
   useTab: function (tab) {
     bg.tab = tab;
     bg.dropperLoaded = false;
-    bg.dropperVersion = 0;
-    bg.screenshotData = '';
-    bg.canvas = document.createElement("canvas");
-    bg.canvasContext = null;
 
     bg.sendMessage({type: 'edropper-loaded'}, function (res) {
       bg.dropperLoaded = true;
-      bg.dropperVersion = res.version;
-      ////console.log('Picker is loaded with version ' + bg.dropperVersion);
     });
   },
 
@@ -77,16 +60,11 @@ var bg = {
         case 'reload-background':
           window.location.reload();
           break;
-
-        // Clear colors history
-        case 'clear-history':
-          bg.clearHistory(sendResponse);
-          break;
       }
     });
 
     // longer connections
-    chrome.extension.onConnect.addListener(function (port) {
+    chrome.runtime.onConnect.addListener(function (port) {
       port.onMessage.addListener(function (req) {
         switch (req.type) {
           // Taking screenshot for content script
@@ -109,16 +87,6 @@ var bg = {
 
         }
       });
-    });
-  },
-
-  // shortcut for injecting new content
-  inject: function (file, tab) {
-    if (tab == undefined)
-      tab = bg.tab.id;
-
-    ////console.log("Injecting " + file + " into tab " + tab);
-    chrome.tabs.executeScript(tab, {allFrames: false, file: file}, function () {
     });
   },
 
@@ -183,60 +151,63 @@ var bg = {
     });
   },
 
-  // activate Pick
-  activate: function () {
+  //
+  activate: function (callback) {
     // inject javascript if needed
     if (bg.dropperLoaded === false) {
-      chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "js/vendor/jquery-1.10.2.min.js"}, function () {
-        chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "inc/jquery-special-scroll.js"}, function () {
-          chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "js/vendor/fabric-all.min.js"}, function () {
-            chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "edropper2.js"}, function () {
-              bg.pickupActivate();
-            });
-          });
-        });
+      chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "js/inject.js"}, function () {
+        if(callback) {
+          callback();
+        }
       });
     }
-    else
-      bg.pickupActivate();
+    else {
+      if(callback) {
+        callback();
+      }
+    }
   },
 
   hRulerActivate: function() {
-    // load options
-    /*cursor = (window.localStorage.dropperCursor === 'crosshair') ? 'crosshair' : 'default';
-    enableColorToolbox = (window.localStorage.enableColorToolbox === "false") ? false : true;
-    enableColorTooltip = (window.localStorage.enableColorTooltip === "false") ? false : true;
-    enableRightClickDeactivate = (window.localStorage.enableRightClickDeactivate === "false") ? false : true;*/
+    bg.activate(function() {
+      // load options
+      /*cursor = (window.localStorage.dropperCursor === 'crosshair') ? 'crosshair' : 'default';
+       enableColorToolbox = (window.localStorage.enableColorToolbox === "false") ? false : true;
+       enableColorTooltip = (window.localStorage.enableColorTooltip === "false") ? false : true;
+       enableRightClickDeactivate = (window.localStorage.enableRightClickDeactivate === "false") ? false : true;*/
 
-    // activate picker
-    bg.sendMessage({type: 'hruler-activate', options: {  }}, function () {
+      // activate picker
+      bg.sendMessage({type: 'hruler-activate', options: {  }}, function () {
+      });
     });
   },
 
   vRulerActivate: function() {
-    // load options
-    /*cursor = (window.localStorage.dropperCursor === 'crosshair') ? 'crosshair' : 'default';
-     enableColorToolbox = (window.localStorage.enableColorToolbox === "false") ? false : true;
-     enableColorTooltip = (window.localStorage.enableColorTooltip === "false") ? false : true;
-     enableRightClickDeactivate = (window.localStorage.enableRightClickDeactivate === "false") ? false : true;*/
+    bg.activate(function() {
+      // load options
+      /*cursor = (window.localStorage.dropperCursor === 'crosshair') ? 'crosshair' : 'default';
+       enableColorToolbox = (window.localStorage.enableColorToolbox === "false") ? false : true;
+       enableColorTooltip = (window.localStorage.enableColorTooltip === "false") ? false : true;
+       enableRightClickDeactivate = (window.localStorage.enableRightClickDeactivate === "false") ? false : true;*/
 
-    // activate picker
-    bg.sendMessage({type: 'vruler-activate', options: {  }}, function () {
+      // activate picker
+      bg.sendMessage({type: 'vruler-activate', options: {  }}, function () {
+      });
     });
   },
 
   pickupActivate: function () {
-    // load options
-    cursor = (window.localStorage.dropperCursor === 'crosshair') ? 'crosshair' : 'default';
-    enableColorToolbox = (window.localStorage.enableColorToolbox === "false") ? false : true;
-    enableColorTooltip = (window.localStorage.enableColorTooltip === "false") ? false : true;
-    enableRightClickDeactivate = (window.localStorage.enableRightClickDeactivate === "false") ? false : true;
+    bg.activate(function() {
+      // load options
+      cursor = (window.localStorage.dropperCursor === 'crosshair') ? 'crosshair' : 'default';
+      enableColorToolbox = (window.localStorage.enableColorToolbox === "false") ? false : true;
+      enableColorTooltip = (window.localStorage.enableColorTooltip === "false") ? false : true;
+      enableRightClickDeactivate = (window.localStorage.enableRightClickDeactivate === "false") ? false : true;
 
-    // activate picker
-    bg.sendMessage({type: 'pickup-activate', options: { cursor: cursor, enableColorToolbox: enableColorToolbox, enableColorTooltip: enableColorTooltip, enableRightClickDeactivate: enableRightClickDeactivate}}, function () {
+      // activate picker
+      bg.sendMessage({type: 'pickup-activate', options: { cursor: cursor, enableColorToolbox: enableColorToolbox, enableColorTooltip: enableColorTooltip, enableRightClickDeactivate: enableRightClickDeactivate}}, function () {
+      });
     });
-
-    ////console.log('activating pickup');
   },
 
   // capture actual Screenshot
@@ -287,19 +258,9 @@ var bg = {
   tabOnUpdatedListener: function () {
     chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       if (tab.url.indexOf('http') == 0 && changeInfo.status == "complete") {
-        ////console.log("Injecting");
-        chrome.tabs.executeScript(tabId, {allFrames: false, file: "inc/shortcut.js"});
         chrome.tabs.executeScript(tabId, {allFrames: false, file: bg.helperFile});
       }
     });
-  },
-
-  clearHistory: function (sendResponse) {
-    ////console.log('clearing history');
-    window.localStorage.history = "[]";
-    bg.color = DEFAULT_COLOR;
-
-    sendResponse({state: 'OK'});
   },
 
   init: function () {
@@ -314,16 +275,6 @@ var bg = {
       }
     }
 
-    // settings from local storage
-    if (window.localStorage.history == undefined) {
-      bg.clearHistory();
-    } else if (window.localStorage.history.length > 3) {
-      var history = JSON.parse(window.localStorage.history);
-      history = bg.addHashesToColorsInHistory(history);
-      bg.color = history[history.length - 1];
-    } else {
-      bg.color = DEFAULT_COLOR;
-    }
     // windows support jpeg only
     bg.screenshotFormat = bg.isThisPlatform('windows') ? 'jpeg' : 'png';
 
@@ -338,60 +289,7 @@ var bg = {
     bg.tabOnUpdatedListener();
 
     // refresh content scripts
-    bg.refreshContentScripts();
-  },
-
-  // handle finding all tabs and inject where needed
-  refreshContentScripts: function () {
-    bg.tabs = [];
-    bg.findContentScriptTabs();
-    window.setTimeout(function () {
-      bg.refreshTabs();
-    }, 200);
-  },
-
-  // find all tabs in all windows and check injected version
-  findContentScriptTabs: function () {
-
-    chrome.windows.getAll({'populate': true}, function (windows) {
-      windows.forEach(function (win) {
-        win.tabs.forEach(function (tab) {
-          if (tab != undefined && tab.url.indexOf('http') == 0 && tab.url.indexOf('https://chrome.google.com/webstore') !== 0) {
-            bg.tabs.push(tab.id);
-
-            chrome.tabs.sendMessage(tab.id, {type: 'helper-version', tabid: tab.id}, function (response) {
-              if (response.version >= NEED_ED_HELPER_VERSION) {
-                ////console.log("tabid " + tab.id + " is ok. Not injecting.");
-                bg.tabs.splice(bg.tabs.indexOf(tab.id), 1);
-              }
-            });
-          }
-        });
-      });
-
-    });
-  },
-
-  // go trough tabs and inject script
-  refreshTabs: function () {
-    bg.tabs.forEach(function (tabId) {
-      ////console.log("tabid " + tabId + " bad. Injecting " + bg.helperFile);
-      // TODO insert shortcut only when missing, not when updating
-      chrome.tabs.executeScript(tabId, {allFrames: false, file: "inc/shortcut.js"});
-      chrome.tabs.executeScript(tabId, {allFrames: false, file: bg.helperFile});
-    });
-  },
-
-  // in versions before 0.3.0 colors were stored without # hash in front
-  // this fixes it
-  addHashesToColorsInHistory: function (history) {
-    if (history[0][0] != '#') {
-      for (key in history) {
-        history[key] = '#' + history[key];
-      }
-    }
-    window.localStorage.history = JSON.stringify(history);
-    return history;
+    //bg.refreshContentScripts();
   }
 };
 

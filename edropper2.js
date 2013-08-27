@@ -1,5 +1,3 @@
-var EDROPPER_VERSION=8;
-
 var page = {
   width: $(document).width(),
   height: $(document).height(),
@@ -37,7 +35,7 @@ var page = {
     chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
       switch(req.type) {
         case 'edropper-loaded':
-          sendResponse({version: EDROPPER_VERSION});
+          sendResponse({});
           break;
         case 'pickup-activate':
           page.options = req.options;
@@ -115,8 +113,12 @@ var page = {
 
     page.rulerActivated = false;
 
-    page.layerUpper.remove(page.previewRulerH);
-    page.layerUpper.remove(page.previewRulerV);
+    if(page.previewRulerH) {
+      page.previewRulerH.remove();
+    }
+    if(page.previewRulerV) {
+      page.previewRulerV.remove();
+    }
 
     page.magnifierDeactivate();
 
@@ -489,7 +491,9 @@ var page = {
 
     page.magnifierActivated = false;
 
-    page.layerUpper.remove(page.magnifier);
+    if(page.magnifier) {
+      page.magnifier.remove();
+    }
     document.removeEventListener("mousemove", page.dragMagnifier, false);
   },
 
@@ -712,8 +716,6 @@ var page = {
   },
 
   init: function() {
-    page.activated = true;
-
     page.messageListener();
 
     // create overlay div
@@ -746,6 +748,10 @@ var page = {
 
     $('#quickmarkup-close').click(function() {
       $('#quickmarkup-c1').hide();
+      page.dropperDeactivate();
+      page.rulerDeactivate();
+      page.magnifierDeactivate();
+      shortcut.remove('Esc');
     });
 
     var stage = new Kinetic.Stage({

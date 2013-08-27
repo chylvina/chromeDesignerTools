@@ -61,7 +61,7 @@ function init() {
   });
   $('#colorpicker').click(function() {
     _gaq.push(['_trackEvent', 'color picker', 'clicked']);
-    bgPage.bg.activate();
+    bgPage.bg.pickupActivate();
     window.close();
   });
   $('#hRuler').click(function() {

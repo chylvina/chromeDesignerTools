@@ -58,7 +58,7 @@ var edHelper = {
 
   // start helper
   init: function() {
-    ////console.log('init helper version ' + edHelper.version);
+    console.log('init helper version ' + edHelper.version);
     // load options
     chrome.runtime.sendMessage({type: "ed-helper-options"}, function(response) {
       edHelper.options = response.options;
@@ -71,5 +71,5 @@ var edHelper = {
 edHelper.init();
 
 // add listener if missing
-if ( !chrome.runtime.onMessage.hasListeners() )
-  chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) { edHelper.messageListener(req, sender, sendResponse); });
+/*if ( !chrome.runtime.onMessage.hasListeners() )
+  chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) { edHelper.messageListener(req, sender, sendResponse); });*/
