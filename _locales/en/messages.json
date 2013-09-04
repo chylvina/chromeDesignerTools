@@ -1,0 +1,149 @@
+{
+	"capture_area":{
+		"message":"Capture selected area"
+	},
+	"capture_screen":{
+		"message":"Capture screen"
+	},
+	"capture_screen_tip":{
+		"message":"Drag and Capture (Press Esc to Exit)"
+	},
+	"capture_webpage":{
+		"message":"Capture whole page"
+	},
+	"capture_window":{
+		"message":"Capture visible part"
+	},
+	"option":{
+		"message":"Option"
+	},
+	"options":{
+		"message":"Quick Markup Options"
+	},
+	"save_and_close":{
+		"message":"Save & Close"
+	},
+	"quality_setting":{
+		"message":"Screenshot Quality Settings:"
+	},
+	"lossy":{
+		"message":"Lossy screenshot"
+	},
+	"lossless":{
+		"message":"Lossless screenshot"
+	},
+	"shortcut_setting":{
+		"message":"Shortcut Settings:"
+	},
+	"shortcutsetting_text":{
+		"message":"Enable keyboard shortcuts"
+	},
+	"hot_key_conflict":{
+		"message":"Shortcuts conflict."
+	},
+	"failed_to_register_hot_key_for_screen_capture":{
+		"message":"The shortcut for Capture Screen Region is registered by another application. Please redefine it."
+	},
+	"shopping_assist_setting": {
+		"message":"Shopping Assistant Settings:"
+	},
+	"shopping_assist":{
+		"message":"Enable shopping assistant can help you find your favorite commodity, and support Quick Markup."
+	},
+	"capturing":{
+		"message":"Capturing..."
+	},
+	"copied":{
+		"message":"Copied"
+	},
+	"copyFailed":{
+		"message":"Copy Failed"
+	},
+	"doCopy":{
+		"message":"Copy"
+	},
+	"doMarkUp":{
+		"message":"Mark Up!"
+	},
+	"doSave":{
+		"message":"Save"
+	},
+	"doUpload":{
+		"message":"Upload (public)"
+	},
+	"extDescription":{
+		"message":"Capture webpage freely or open your local image, mark up with shape, text, icon and mind mapping information, one-click upload to share. Support PNG and shortcuts. Useful in organizing ideas and works, planning and tracking projects, solving the problem of image-based information exchange."
+	},
+	"name":{
+		"message":"Quick Markup: Screen capture"
+	},
+	"openApp":{
+		"message":"Open local image and mark up"
+	},
+	"openMindmap":{
+		"message":"Create mind map"
+	},
+	"save_fail":{
+		"message":"Sorry, failed to save the screenshot."
+	},
+	"save_image":{
+		"message":"Save Image"
+	},
+	"selectedCaptureOK":{
+		"message":"Capture"
+	},
+	"cancel":{
+		"message":"Cancel"
+	},
+	"tooBig":{
+		"message":"The image is too large and will be truncated."
+	},
+	"uploadComplete":{
+		"message":"Upload Complete!"
+	},
+	"uploadFailed":{
+		"message":"Sorry, upload failed, please check the network and try again."
+	},
+	"uploaded":{
+		"message":"Uploaded"
+	},
+	"uploading":{
+		"message":"Uploading..."
+	},
+	"loading":{
+		"message":"The page is loading, please wait."
+	},
+	"tip_markup1":{
+		"message":"Quick Markup is a free, all-purpose tool that enables you to"
+	},
+	"tip_markup2":{
+		"message":"mark up with shape, text, icon and mind mapping information;"
+	},
+	"tip_markup3":{
+		"message":"save and manage your notes, images and screenshots;"
+	},
+	"tip_markup4":{
+		"message":"share your data in a variety of ways;"
+	},
+	"tip_upload":{
+		"message":"Your screenshot will be saved on quick-markup.com, which will be automatically removed after about 30 days."
+	},
+	"tip_save":{
+		"message":"Save screenshot on your computer."
+	},
+	"tip_copy":{
+		"message":"Copy screenshot to the clipboard. Then it will be placed on your clipboard for you to paste into another program."
+	},
+	"untitled":{
+		"message":"Untitled"
+	},
+  "clear_element":{
+    "message":"Clear element"
+  },
+  "clear_element_tip":{
+    "message":"Click or press DELETE key to clear an element in this webpage."
+  },
+  "clear_esc":{
+    "message":"Exit (ESC)"
+  }
+}
