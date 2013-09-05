@@ -3,7 +3,9 @@
   <title id="optionPageTitle"></title>
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" href="css/options.css"/>
+  <link rel="stylesheet" type="text/css" href="inc/spectrum/spectrum.css">
   <script src="js/vendor/jquery-1.7.1.min.js"></script>
+  <script src="inc/spectrum/spectrum.js"></script>
   <script src="js/hotkey_storage.js"></script>
   <script src="js/options.js"></script>
 </head>
@@ -13,30 +15,20 @@
     <h1 id="optionTitle"></h1>
   </div>
 
-  <!-- Quality -->
-  <h4 id="screenshootQualitySetting" style="display: none;"></h4>
-
-  <div class="section-content" style="display: none;">
-    <div>
-      <label>
-        <input id="lossy" type="radio" name="quality">
-        <span id="lossyScreenShot" for="lossy"></span>
-      </label>
-      &nbsp;
-      <label>
-        <input id="lossless" type="radio" name="quality">
-        <span id="losslessScreenShot" for="lossless"></span>
-      </label>
-    </div>
-    <div class="clear"></div>
-  </div>
-
   <!-- Shortcut -->
   <h4 id="shoppingAssistSetting">Shopping Assist Setting</h4>
 
   <div id="shoppingAssistContainer" style="margin: 2px 0 0 56px;">
     <input type="checkbox" id="shoppingAssist">
     <label for="shoppingAssist" id="shoppingAssistText" style="padding-left: 20px;"></label>
+  </div>
+
+  <!-- Theme Color -->
+  <h4 id="colorTitle"></h4>
+
+  <div style="margin: 2px 0 0 56px;">
+    <label id="colorTip" style="padding-left: 20px;"></label>
+    <input id='spectrum' />
   </div>
 
   <!-- Screen Shot -->

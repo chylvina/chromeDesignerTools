@@ -31,5 +31,17 @@
   },
   "saveAndClose":{
     "message":"Save and close"
+  },
+  "spectrumChoose":{
+    "message":"choose"
+  },
+  "spectrumCancel":{
+    "message":"cancel"
+  },
+  "spectrumTip":{
+    "message":"Theme color for tools"
+  },
+  "optionColorTitle":{
+    "message":"Colors"
   }
 }

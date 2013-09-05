@@ -23,6 +23,8 @@ $(document).ready(function() {
     i18nReplace('shorcutSetting','shortcut');
     i18nReplace('settingShortcutText','enableShortcut');
     i18nReplace('saveAndClose','saveAndClose');
+    i18nReplace('colorTitle','optionColorTitle');
+    i18nReplace('colorTip','spectrumTip');
     $('#colorpicker label').text(chrome.i18n.getMessage('colorpicker'));
     $('#rulerH label').text(chrome.i18n.getMessage('rulerH'));
     $('#rulerV label').text(chrome.i18n.getMessage('rulerV'));
@@ -30,6 +32,18 @@ $(document).ready(function() {
     initShoppingAssist();
     HotKey.setup();
     HotKeySetting.setup();
+
+    localStorage['THEME_COLOR'] = localStorage['THEME_COLOR'] || "#f00";
+
+    $("#spectrum").spectrum({
+      showInput: true,
+      color: localStorage['THEME_COLOR'],
+      chooseText: chrome.i18n.getMessage('spectrumChoose'),
+      cancelText: chrome.i18n.getMessage('spectrumCancel'),
+      change: function(color) {
+        localStorage['THEME_COLOR'] = color.toHexString();
+      }
+    });
 
     $("#saveAndClose").click(function() {
       if (save()) {

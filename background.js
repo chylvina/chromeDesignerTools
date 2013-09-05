@@ -67,18 +67,6 @@ var bg = {
             }
           }
           break;
-        case 'ed-helper-options':
-          sendResponse(bg.edHelperOptions(req));
-          break;
-        case 'activate-from-hotkey':
-          bg.activate2();
-          sendResponse({});
-          break;
-
-        // Define what background script supports
-        case 'supports':
-          bg.supports(req.what, sendResponse);
-          break;
 
         // Reload background script
         case 'reload-background':
@@ -114,26 +102,6 @@ var bg = {
     });
   },
 
-  // load options for ed helper and send them
-  edHelperOptions: function (req) {
-    var hotkeyActivate = null;
-
-    if (window.localStorage != null) {
-      if (window.localStorage.keyActivate != undefined && window.localStorage.keyActivate != "")
-        hotkeyActivate = window.localStorage.keyActivate;
-    }
-
-    return {options: {hotkeyActivate: hotkeyActivate}};
-  },
-
-  supports: function (what, sendResponse) {
-    var state = 'no';
-    if (what == 'dummy' || what == 'history')
-      state = 'ok';
-
-    sendResponse({state: state});
-  },
-
   // method for setting color. It set bg color, update badge and save to history if possible
   setColor: function (req) {
     // we are storing color with first # character
@@ -167,14 +135,6 @@ var bg = {
     }
   },
 
-  // activate from content script
-  activate2: function () {
-    chrome.tabs.getSelected(null, function (tab) {
-      bg.useTab(tab);
-      bg.activate();
-    });
-  },
-
   //
   activate: function (callback) {
     // inject javascript if needed
@@ -201,21 +161,15 @@ var bg = {
        enableRightClickDeactivate = (window.localStorage.enableRightClickDeactivate === "false") ? false : true;*/
 
       // activate picker
-      bg.sendMessage({type: 'hruler-activate', options: {  }}, function () {
+      bg.sendMessage({type: 'hruler-activate', options: { themeColor: localStorage['THEME_COLOR'] || "#f00" }}, function () {
       });
     });
   },
 
   vRulerActivate: function() {
     bg.activate(function() {
-      // load options
-      /*cursor = (window.localStorage.dropperCursor === 'crosshair') ? 'crosshair' : 'default';
-       enableColorToolbox = (window.localStorage.enableColorToolbox === "false") ? false : true;
-       enableColorTooltip = (window.localStorage.enableColorTooltip === "false") ? false : true;
-       enableRightClickDeactivate = (window.localStorage.enableRightClickDeactivate === "false") ? false : true;*/
-
       // activate picker
-      bg.sendMessage({type: 'vruler-activate', options: {  }}, function () {
+      bg.sendMessage({type: 'vruler-activate', options: { themeColor: localStorage['THEME_COLOR'] || "#f00" }}, function () {
       });
     });
   },
@@ -223,7 +177,7 @@ var bg = {
   pickupActivate: function () {
     bg.activate(function() {
       // activate picker
-      bg.sendMessage({type: 'pickup-activate', options: { cursor: 'default' }}, function () {
+      bg.sendMessage({type: 'pickup-activate', options: { cursor: 'default', themeColor: localStorage['THEME_COLOR'] || "#f00" }}, function () {
       });
     });
   },
@@ -273,14 +227,6 @@ var bg = {
 
   },
 
-  tabOnUpdatedListener: function () {
-    chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-      if (tab.url.indexOf('http') == 0 && changeInfo.status == "complete") {
-        chrome.tabs.executeScript(tabId, {allFrames: false, file: bg.helperFile});
-      }
-    });
-  },
-
   init: function () {
     // only if we have support for localStorage
     if (window.localStorage != null) {
@@ -302,12 +248,6 @@ var bg = {
     // act when tab is changed
     // TODO: call only when needed? this is now used also if picker isn't active
     bg.tabOnChangeListener();
-
-    // TODO: call only when shortcuts enabled now?
-    bg.tabOnUpdatedListener();
-
-    // refresh content scripts
-    //bg.refreshContentScripts();
   }
 };
 

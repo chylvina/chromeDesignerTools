@@ -31,5 +31,17 @@
   },
   "saveAndClose":{
     "message":"保存并关闭"
+  },
+  "spectrumChoose":{
+    "message":"选择"
+  },
+  "spectrumCancel":{
+    "message":"取消"
+  },
+  "spectrumTip":{
+    "message":"请选择工具的主题颜色"
+  },
+  "optionColorTitle":{
+    "message":"颜色"
   }
 }

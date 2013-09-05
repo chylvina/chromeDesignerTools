@@ -37,12 +37,16 @@ var page = {
           sendResponse({});
           break;
         case 'pickup-activate':
+          page.themeColor = req.options.themeColor;
+          console.log(page.themeColor);
           page.dropperActivate();
           break;
         case 'hruler-activate':
+          page.themeColor = req.options.themeColor;
           page.rulerActivate(page.rulerType.H);
           break;
         case 'vruler-activate':
+          page.themeColor = req.options.themeColor;
           page.rulerActivate(page.rulerType.V);
           break;
         case 'pickup-deactivate':
@@ -358,7 +362,7 @@ var page = {
           y: -5,
           width: 10,
           height: 10,
-          fill: 'red'
+          fill: page.themeColor
         })).add(new Kinetic.Rect({
           x: -4,
           y: -4,
