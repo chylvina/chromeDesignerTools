@@ -18,7 +18,6 @@ var page = {
   layerUpper: null,
   layerLower: null,
   stage: null,
-  options: {cursor: 'default', enableColorToolbox: true, enableColorTooltip: true, enableRightClickDeactivate: true},
 
   defaults: function() {
     page.canvas = document.createElement("canvas");
@@ -38,7 +37,6 @@ var page = {
           sendResponse({});
           break;
         case 'pickup-activate':
-          page.options = req.options;
           page.dropperActivate();
           break;
         case 'hruler-activate':
@@ -141,9 +139,6 @@ var page = {
     $(document).bind('scrollstop', page.onScrollStop);
     document.addEventListener("mousemove", page.onMouseMove, false);
     document.addEventListener("click", page.onMouseClick, false);
-    if ( page.options.enableRightClickDeactivate === true ) {
-      document.addEventListener("contextmenu", page.onContextMenu, false);
-    }
   },
 
   dropperDeactivate: function() {
@@ -160,9 +155,6 @@ var page = {
     ////console.log('deactivating page dropper');
     document.removeEventListener("mousemove", page.onMouseMove, false);
     document.removeEventListener("click", page.onMouseClick, false);
-    if ( page.options.enableRightClickDeactivate === true ) {
-      document.removeEventListener("contextmenu", page.onContextMenu, false);
-    }
     $(document).unbind('scrollstop', page.onScrollStop);
   },
 
@@ -696,7 +688,7 @@ var page = {
       // TODO - je nutne refreshnout ctverecek a nastavit mu spravnou barvu
 
       page.screenshoting = false;
-      $("#eye-dropper-overlay").css('cursor',page.options.cursor);
+      $("#eye-dropper-overlay").css('cursor','default');
 
       //page.sendMessage({type: 'debug-tab', image: page.canvas.toDataURL()}, function() {});
     }
@@ -724,7 +716,7 @@ var page = {
         '<span id="quickmarkup-tip">' + "Working" +
         '</span><span id="quickmarkup-esc">' + 'Hide' +'</span>' +
         '</div><img id="quickmarkup-close" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALFJREFUeNqMkk0OAUEQhSvE2PgNzmVOYCEWbkTib2QwiMS1LIkDjNe8SiqlJV7yLebVT1dXj8hHYzADDflWC+RgqsYI3EEJdkxQdcCJsQcby4KGEroloA72LrbWLrkLbIn1jqCrRzdB5hIsZ5usqvJIn1xwvLcqpiD5saUy4kkfXP8daRBJ3oBVpKgnvL0NHDheLbK9ZSiYgCeNi9tG2zS8gaGYXyPjm3gFbw7S8PESYACUf0fkQ53xHwAAAABJRU5ErkJggg=="></div></div>')
-        .before('<div id="eye-dropper-overlay" style="position: absolute; width: '+page.width+'px; height: '+page.height+'px; opacity: 1; background: none; border: none; z-index: 5000;"></div>');
+        .before('<div id="eye-dropper-overlay" style="position: absolute; width: '+page.screenWidth+'px; height: '+page.screenHeight+'px; opacity: 1; background: none; border: none; z-index: 5000;"></div>');
 
     var onCancel = function() {
       if(page.dropperActivated) {
@@ -741,17 +733,25 @@ var page = {
           page.hide();
         }
       }
+    };
+
+    var handlKeyboard = function(e) {
+      var keyCode = e.keyCode;
+
+      if(keyCode == 27) {   // ESC
+        return onCancel();
+      }
     }
 
     $('#quickmarkup-esc').click(onCancel);
-    shortcut.add('Esc', onCancel);
+    $('body').keydown(handlKeyboard);
 
     $('#quickmarkup-close').click(function() {
       $('#quickmarkup-c1').hide();
       page.dropperDeactivate();
       page.rulerDeactivate();
       page.magnifierDeactivate();
-      shortcut.remove('Esc');
+      $('body').unbind('keydown', handlKeyboard);
     });
 
     var stage = new Kinetic.Stage({

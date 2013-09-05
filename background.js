@@ -43,6 +43,30 @@ var bg = {
     // simple messages
     chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
       switch (req.type) {
+        case 'designertools_hot_key':
+          if (HotKey.isEnabled()) {
+            switch (req.keyCode) {
+              case HotKey.getCharCode('colorpicker'):
+                chrome.tabs.getSelected(null, function (tab) {
+                  bg.useTab(tab);
+                  bg.pickupActivate();
+                });
+                break;
+              case HotKey.getCharCode('rulerH'):
+                chrome.tabs.getSelected(null, function (tab) {
+                  bg.useTab(tab);
+                  bg.hRulerActivate();
+                });
+                break;
+              case HotKey.getCharCode('rulerV'):
+                chrome.tabs.getSelected(null, function (tab) {
+                  bg.useTab(tab);
+                  bg.vRulerActivate();
+                });
+                break;
+            }
+          }
+          break;
         case 'ed-helper-options':
           sendResponse(bg.edHelperOptions(req));
           break;
@@ -198,14 +222,8 @@ var bg = {
 
   pickupActivate: function () {
     bg.activate(function() {
-      // load options
-      cursor = (window.localStorage.dropperCursor === 'crosshair') ? 'crosshair' : 'default';
-      enableColorToolbox = (window.localStorage.enableColorToolbox === "false") ? false : true;
-      enableColorTooltip = (window.localStorage.enableColorTooltip === "false") ? false : true;
-      enableRightClickDeactivate = (window.localStorage.enableRightClickDeactivate === "false") ? false : true;
-
       // activate picker
-      bg.sendMessage({type: 'pickup-activate', options: { cursor: cursor, enableColorToolbox: enableColorToolbox, enableColorTooltip: enableColorTooltip, enableRightClickDeactivate: enableRightClickDeactivate}}, function () {
+      bg.sendMessage({type: 'pickup-activate', options: { cursor: 'default' }}, function () {
       });
     });
   },
@@ -275,7 +293,7 @@ var bg = {
       }
     }
 
-    // windows support jpeg only
+    // windows support jpeg only ?
     bg.screenshotFormat = bg.isThisPlatform('windows') ? 'jpeg' : 'png';
 
     // we have to listen for messages

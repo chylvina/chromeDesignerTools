@@ -1,27 +1,17 @@
 var HotKey = (function() {
   return {
-    setup: function(plugin) {
+    setup: function() {
       // Default enable hot key for capture.
       if (!localStorage.getItem('hot_key_enabled'))
         localStorage.setItem('hot_key_enabled', true);
 
       // Set default hot key of capture, R V H P.
-      if (!this.get('clear'))
-        this.set('clear', 'C');
-      if (!this.get('area'))
-        this.set('area', 'R');
-      if (!this.get('viewport'))
-        this.set('viewport', 'V');
-      if (!this.get('fullpage'))
-        this.set('fullpage', 'H');
-      if (!this.get('screen'))
-        this.set('screen', 'P');
-
-      var screenCaptureHotKey = this.get('screen');
-      if (this.isEnabled() &&
-          !plugin.setHotKey(screenCaptureHotKey.charCodeAt(0))) {
-        this.set('screen', '@'); // Disable hot key for screen capture.
-      }
+      if (!this.get('rulerH'))
+        this.set('rulerH', 'H');
+      if (!this.get('rulerV'))
+        this.set('rulerV', 'V');
+      if (!this.get('colorpicker'))
+        this.set('colorpicker', 'C');
     },
 
     /**
@@ -30,16 +20,20 @@ var HotKey = (function() {
      * @param {String} value
      */
     set: function(type, value) {
-      var key = type + '_capture_hot_key';
+      var key = type + '_hot_key';
       localStorage.setItem(key, value);
     },
 
     get: function(type) {
-      return localStorage.getItem(type + '_capture_hot_key');
+      return localStorage.getItem(type + '_hot_key');
     },
 
     getCharCode: function(type) {
-      return this.get(type).charCodeAt(0);
+      if(this.get(type)) {
+        return this.get(type).charCodeAt(0);
+      }
+
+      return '';
     },
 
     enable: function() {
@@ -48,7 +42,6 @@ var HotKey = (function() {
 
     disable: function(bg) {
       localStorage.setItem('hot_key_enabled', false);
-      bg.plugin.disableScreenCaptureHotKey();
     },
 
     isEnabled: function() {

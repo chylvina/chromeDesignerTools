@@ -39,16 +39,12 @@ function init() {
   });
 
   // Update hot key.
-  /*if (HotKey.isEnabled() && HotKey.get('clear') != '@')
-    $('clear_element_sc').innerText = 'Ctrl+Alt+' + HotKey.get('clear');
-  if (HotKey.isEnabled() && HotKey.get('area') != '@')
-    $('capture_area_sc').innerText = 'Ctrl+Alt+' + HotKey.get('area');
-  if (HotKey.isEnabled() && HotKey.get('viewport') != '@')
-    $('capture_window_sc').innerText = 'Ctrl+Alt+' + HotKey.get('viewport');
-  if (HotKey.isEnabled() && HotKey.get('fullpage') != '@')
-    $('capture_webpage_sc').innerText = 'Ctrl+Alt+' + HotKey.get('fullpage');
-  if (HotKey.isEnabled() && HotKey.get('screen') != '@')
-    $('capture_screen_sc').innerText = 'Ctrl+Alt+' + HotKey.get('screen');*/
+  if (HotKey.isEnabled() && HotKey.get('colorpicker') != '@')
+    $('#colorpicker .shortcut').text('Ctrl+Alt+' + HotKey.get('colorpicker'));
+  if (HotKey.isEnabled() && HotKey.get('hRuler') != '@')
+    $('#hRuler .shortcut').text('Ctrl+Alt+' + HotKey.get('rulerH'));
+  if (HotKey.isEnabled() && HotKey.get('vRuler') != '@')
+    $('#vRuler .shortcut').text('Ctrl+Alt+' + HotKey.get('rulerV'));
 
   // localization
   //i18nReplace("openApp", "openApp");

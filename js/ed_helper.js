@@ -1,75 +1,34 @@
-var ED_HELPER_VERSION=6;
+var shortcutKey = {
 
-var edHelper = {
-  version: ED_HELPER_VERSION,
-  options: null,
-  shortcuts: [],
-
-  // listen for incoming messages
-  messageListener: function(req, sender, sendResponse) {
-    switch(req.type) {
-      case 'helper-version':
-        ////console.log('helper version ' + edHelper.version + ' in tabid ' + req.tabid);
-        sendResponse({version: edHelper.version, tabid: req.tabid});
-        break;
-      case 'helper-change-shortcut':
-        edHelper.changeShortcut(req.shortcut, req.key);
-        break;
-    }
-  },
-
-  // helper for adding shortcut
-  addShortcut: function(shortcutName, key) {
-    if ( key == null )
-      return;
-
-    // store used key so we can remove it later
-    edHelper.shortcuts[shortcutName] = key;
-
-    // add hotkey function
-    shortcut.add(key, function() { edHelper.handleShortcut(shortcutName); });
-  },
-
-  // unset previous hotkey
-  removeShortcut: function(shortcutName) {
-    if ( edHelper.shortcuts[shortcutName] != undefined )
-      shortcut.remove(edHelper.shortcuts[shortcutName]);
-  },
-
-  changeShortcut: function(shortcutName, key) {
-    ////console.log("changing shortcut " + shortcutName + " to key " + key);
-    edHelper.removeShortcut(shortcutName);
-    edHelper.addShortcut(shortcutName, key);
-  },
-
-  handleShortcut: function(shortcutName) {
-    switch(shortcutName) {
-      case 'activate':
-        chrome.runtime.sendMessage({type: "activate-from-hotkey"});
-        break;
-    }
-  },
-
-  // handle hotkeys
-  hotKeyStart: function() {
-    // activate picker
-    edHelper.addShortcut('activate', edHelper.options.hotkeyActivate);
-  },
-
-  // start helper
   init: function() {
-    console.log('init helper version ' + edHelper.version);
-    // load options
-    chrome.runtime.sendMessage({type: "ed-helper-options"}, function(response) {
-      edHelper.options = response.options;
-      edHelper.hotKeyStart();
-    });
+    if (document.body.hasAttribute('dt_injected')) {
+      return;
+    }
+    document.body.setAttribute('dt_injected', true);
+    document.body.addEventListener('keydown', shortcutKey.handleShortcut, false);
+  },
+
+  isThisPlatform: function(operationSystem) {
+    return navigator.userAgent.toLowerCase().indexOf(operationSystem) > -1;
+  },
+
+  handleShortcut: function (event) {
+    var isMac = shortcutKey.isThisPlatform('mac');
+    var keyCode = event.keyCode;
+    // Send compose key like Ctrl + Alt + alphabetical-key to background.
+    if ((event.ctrlKey && event.altKey && !isMac ||
+    event.metaKey && event.altKey && isMac) &&
+    keyCode > 64 && keyCode < 91) {
+      chrome.runtime.sendMessage({
+        type: 'designertools_hot_key',
+        keyCode: keyCode
+      });
+    }
+  },
+
+  sendMessage: function(message) {
+    chrome.extension.sendRequest(message);
   }
-}
+};
 
-// init
-edHelper.init();
-
-// add listener if missing
-/*if ( !chrome.runtime.onMessage.hasListeners() )
-  chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) { edHelper.messageListener(req, sender, sendResponse); });*/
+shortcutKey.init();
