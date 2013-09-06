@@ -30,7 +30,7 @@
       "run_at": "document_end"
     },
     {
-      "js": [ "js/ed_helper.js" ],
+      "js": [ "js/ed_helper.js"],
       "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
       "run_at": "document_end"
     }

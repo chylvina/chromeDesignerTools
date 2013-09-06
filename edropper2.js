@@ -287,7 +287,6 @@ var page = {
   onScrollStart: function() {
     if (!page.dropperActivated)
      return;
-
   },
 
   // right click
@@ -301,7 +300,7 @@ var page = {
   },
 
   // window is resized
-  onWindowResize: function(e) {
+  onWindowResize: function() {
     if (!page.dropperActivated)
       return;
 
@@ -313,8 +312,8 @@ var page = {
     // width and height changed so we have to get new one
     page.width = $(document).width();
     page.height = $(document).height();
-    page.screenWidth = window.innerWidth;
-    page.screenHeight = window.innerHeight;
+    page.screenWidth = $(window).width();
+    page.screenHeight = $(window).height();
 
     // also don't forget to set overlay
     $("#designertools-overlay").css('width',page.width).css('height',page.height);
@@ -672,8 +671,8 @@ var page = {
     var image = document.createElement('img');
 
     image.onload = function() {
-      page.screenWidth = image.width;
-      page.screenHeight = image.height;
+      /*page.screenWidth = image.width;
+      page.screenHeight = image.height;*/
 
       var rect = {x: page.XOffset, y: page.YOffset, width: image.width, height: image.height};
       var merged = false;
@@ -752,6 +751,12 @@ var page = {
       return;
     }
     document.body.setAttribute('designertools_injected', true);
+
+    page.width = $(document).width();
+    page.height = $(document).height();
+    page.screenWidth = $(window).width();
+    page.screenHeight = $(window).height();
+    console.log(page.width, page.screenWidth);
 
     page.messageListener();
 
