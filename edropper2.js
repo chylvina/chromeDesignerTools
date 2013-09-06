@@ -629,7 +629,7 @@ var page = {
       }
     }
 
-    $('#stageUpper')
+    $('#designertools-stageUpper')
     .css('top', window.scrollY + 'px')
     .css('left', window.scrollX + 'px');
 
@@ -690,13 +690,13 @@ var page = {
   show: function() {
     page.hidden = false;
     $('#designertools-overlay').show();
-    $('#quickmarkup-esc').text('Hide');
+    $('#designertools-esc').text('Hide');
   },
 
   hide: function() {
     page.hidden = true;
     $('#designertools-overlay').hide();
-    $('#quickmarkup-esc').text('Show');
+    $('#designertools-esc').text('Show');
   },
 
   onCancel: function() {
@@ -719,12 +719,12 @@ var page = {
     page.messageListener();
 
     // create overlay div
-    $("body").before('<div id="quickmarkup-c1">' +
-        '<div id="quickmarkup-c2"><div id="quickmarkup-c3">' +
-        '<span id="quickmarkup-tip">' + "Working" +
-        '</span><span id="quickmarkup-esc">' + 'Hide' +'</span>' +
-        '</div><img id="quickmarkup-close" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALFJREFUeNqMkk0OAUEQhSvE2PgNzmVOYCEWbkTib2QwiMS1LIkDjNe8SiqlJV7yLebVT1dXj8hHYzADDflWC+RgqsYI3EEJdkxQdcCJsQcby4KGEroloA72LrbWLrkLbIn1jqCrRzdB5hIsZ5usqvJIn1xwvLcqpiD5saUy4kkfXP8daRBJ3oBVpKgnvL0NHDheLbK9ZSiYgCeNi9tG2zS8gaGYXyPjm3gFbw7S8PESYACUf0fkQ53xHwAAAABJRU5ErkJggg=="></div></div>')
-        .before('<div id="designertools-overlay" style="width: '+page.width+'px; height: '+page.height+'px;"><div id="stageUpper"></div><div id="stageLower"></div></div>');
+    $("body").before('<div id="designertools-c1">' +
+        '<div id="designertools-c2"><div id="designertools-c3">' +
+        '<span id="designertools-tip">' + "Working" +
+        '</span><span id="designertools-esc">' + 'Hide' +'</span>' +
+        '</div><img id="designertools-close" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALFJREFUeNqMkk0OAUEQhSvE2PgNzmVOYCEWbkTib2QwiMS1LIkDjNe8SiqlJV7yLebVT1dXj8hHYzADDflWC+RgqsYI3EEJdkxQdcCJsQcby4KGEroloA72LrbWLrkLbIn1jqCrRzdB5hIsZ5usqvJIn1xwvLcqpiD5saUy4kkfXP8daRBJ3oBVpKgnvL0NHDheLbK9ZSiYgCeNi9tG2zS8gaGYXyPjm3gFbw7S8PESYACUf0fkQ53xHwAAAABJRU5ErkJggg=="></div></div>')
+        .before('<div id="designertools-overlay" style="width: '+page.width+'px; height: '+page.height+'px;"><div id="designertools-stageUpper"></div><div id="designertools-stageLower"></div></div>');
 
     var handlKeyboard = function(e) {
       var keyCode = e.keyCode;
@@ -735,7 +735,7 @@ var page = {
     }
 
     page.stageLower = new Kinetic.Stage({
-      container: 'stageLower',
+      container: 'designertools-stageLower',
       width: page.width,
       height: page.height
     });
@@ -743,18 +743,18 @@ var page = {
     page.stageLower.add(page.layerLower);
 
     page.stageUpper = new Kinetic.Stage({
-      container: 'stageUpper',
+      container: 'designertools-stageUpper',
       width: page.screenWidth,
       height: page.screenHeight
     });
     page.layerUpper = new Kinetic.Layer();
     page.stageUpper.add(page.layerUpper);
 
-    $('#quickmarkup-esc').click(page.onCancel);
+    $('#designertools-esc').click(page.onCancel);
     $('body').keydown(handlKeyboard);
 
-    $('#quickmarkup-close').click(function() {
-      $('#quickmarkup-c1').hide();
+    $('#designertools-close').click(function() {
+      $('#designertools-c1').hide();
       page.dropperDeactivate();
       page.rulerDeactivate();
       page.magnifierDeactivate();

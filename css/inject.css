@@ -1,29 +1,29 @@
 /* tip */
-#quickmarkup-c1 {
+#designertools-c1 {
   position: fixed;
   width: 100%;
   top: 0;
   left: 0;
   text-align: center;
-  z-index: 9999;
+  z-index: 99999;
   font-family: arial, sans-serif;
   font-size: 14px;
 }
 
-#quickmarkup-c2 {
+#designertools-c2 {
   position: relative;
   display: inline-block;
   text-align: center;
 }
 
-#quickmarkup-close {
+#designertools-close {
   position: absolute;
   top: 11px;
   right: 10px;
   cursor: pointer;
 }
 
-#quickmarkup-c3 {
+#designertools-c3 {
   -webkit-border-top-left-radius: 0;  -webkit-border-top-right-radius: 0;  background-color: #F9EDBE;
   padding: 8px 72px;
   border: 1px solid #F0C36D;
@@ -35,11 +35,11 @@
   -webkit-border-bottom-left-radius: 2px;
 }
 
-#quickmarkup-tip {
+#designertools-tip {
   padding-right: 60px;
 }
 
-#quickmarkup-esc {
+#designertools-esc {
   text-decoration: underline;
   cursor: pointer;
 }
@@ -51,11 +51,11 @@
   opacity: 1;
   background: none;
   border: none;
-  z-index: 99999;
+  z-index: 99998;
 }
-#stageUpper {
+#designertools-stageUpper {
   position: absolute;
 }
-#stageLower {
+#designertools-stageLower {
   position: absolute;
 }
