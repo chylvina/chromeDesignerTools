@@ -15,6 +15,7 @@
   border: 0;
   vertical-align: baseline;
   line-height: 1;
+  overflow: hidden;
 }
 
 #designertools-c2 {
@@ -68,6 +69,9 @@
   background: none;
   border: none;
   z-index: 99998;
+  width: 100%;
+  overflow: hidden !important;
+  display: block;
 }
 #designertools-stageUpper {
   position: absolute;

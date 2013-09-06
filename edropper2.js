@@ -316,7 +316,7 @@ var page = {
     page.screenHeight = $(window).height();
 
     // also don't forget to set overlay
-    $("#designertools-overlay").css('width',page.width).css('height',page.height);
+    $("#designertools-overlay").css('height',page.height);
 
     // call screen chaned
     page.screenChanged();
@@ -756,7 +756,6 @@ var page = {
     page.height = $(document).height();
     page.screenWidth = $(window).width();
     page.screenHeight = $(window).height();
-    console.log(page.width, page.screenWidth);
 
     page.messageListener();
 
@@ -766,7 +765,7 @@ var page = {
         '<span id="designertools-tip">' +
         '</span><span id="designertools-esc"></span>' +
         '</div><img id="designertools-close" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALFJREFUeNqMkk0OAUEQhSvE2PgNzmVOYCEWbkTib2QwiMS1LIkDjNe8SiqlJV7yLebVT1dXj8hHYzADDflWC+RgqsYI3EEJdkxQdcCJsQcby4KGEroloA72LrbWLrkLbIn1jqCrRzdB5hIsZ5usqvJIn1xwvLcqpiD5saUy4kkfXP8daRBJ3oBVpKgnvL0NHDheLbK9ZSiYgCeNi9tG2zS8gaGYXyPjm3gFbw7S8PESYACUf0fkQ53xHwAAAABJRU5ErkJggg=="></div></div>')
-        .before('<div id="designertools-overlay" style="width: '+page.width+'px; height: '+page.height+'px;"><div id="designertools-stageUpper"></div><div id="designertools-stageLower"></div></div>');
+        .before('<div id="designertools-overlay" style="height: '+page.height+'px;"><div id="designertools-stageUpper"></div><div id="designertools-stageLower"></div></div>');
 
     page.show();
 
