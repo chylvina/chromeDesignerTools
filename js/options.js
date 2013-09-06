@@ -6,11 +6,6 @@ $(document).ready(function() {
     navigator.userAgent.toLowerCase().indexOf('linux') > -1;
   }
 
-  function isHighVersion() {
-    var version = navigator.userAgent.match(/Chrome\/(\d+)/)[1];
-    return version > 9;
-  }
-
   function i18nReplace(id, messageid) {
     return $('#' + id).text(chrome.i18n.getMessage(messageid || id));
   }

@@ -43,5 +43,26 @@
   },
   "optionColorTitle":{
     "message":"颜色"
+  },
+  "rulerActivatedTip":{
+    "message":"标尺正在工作."
+  },
+  "designertoolsActivatedTip":{
+    "message":"设计师助手正在工作."
+  },
+  "designertoolsDeactivatedTip":{
+    "message":"设计师助手已经隐藏."
+  },
+  "colorpickerActivatedTip":{
+    "message":"取色器正在工作."
+  },
+  "deactivateTip":{
+    "message":"取消(ESC)"
+  },
+  "hideTip":{
+    "message":"隐藏"
+  },
+  "showTip":{
+    "message":"显示"
   }
 }

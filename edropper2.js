@@ -72,6 +72,10 @@ var page = {
     chrome.extension.connect().postMessage(message);
   },
 
+  i18nReplace: function (id, messageid) {
+    return $('#' + id).text(chrome.i18n.getMessage(messageid || id));
+  },
+
   // ---------------------------------
   // DROPPER CONTROL 
   // ---------------------------------
@@ -82,6 +86,11 @@ var page = {
     }
 
     page.rulerActivated = true;
+    $('#designertools-c1').show();
+    page.show();
+    page.i18nReplace("designertools-tip", "rulerActivatedTip");
+    page.i18nReplace("designertools-esc", "deactivateTip");
+
     page.screenChanged();
     page.magnifierActivate();
 
@@ -122,6 +131,9 @@ var page = {
 
     page.rulerActivated = false;
 
+    page.i18nReplace("designertools-tip", "designertoolsActivatedTip");
+    page.i18nReplace("designertools-esc", "hideTip");
+
     if(page.previewRulerH) {
       page.previewRulerH.remove();
     }
@@ -142,6 +154,12 @@ var page = {
       return;
 
     page.dropperActivated = true;
+
+    $('#designertools-c1').show();
+    page.show();
+    page.i18nReplace("designertools-tip", "colorpickerActivatedTip");
+    page.i18nReplace("designertools-esc", "deactivateTip");
+
     page.screenChanged();
 
     page.magnifierActivate();
@@ -160,6 +178,10 @@ var page = {
     $("#designertools-overlay").css('cursor','default');
 
     page.dropperActivated = false;
+
+    $('#designertools-c1').show();
+    page.i18nReplace("designertools-tip", "designertoolsActivatedTip");
+    page.i18nReplace("designertools-esc", "hideTip");
 
     page.magnifierDeactivate();
 
@@ -690,29 +712,40 @@ var page = {
   show: function() {
     page.hidden = false;
     $('#designertools-overlay').show();
-    $('#designertools-esc').text('Hide');
+
+    page.i18nReplace("designertools-tip", "designertoolsActivatedTip");
+    page.i18nReplace("designertools-esc", "hideTip");
   },
 
   hide: function() {
     page.hidden = true;
     $('#designertools-overlay').hide();
-    $('#designertools-esc').text('Show');
+
+    page.i18nReplace("designertools-tip", "designertoolsDeactivatedTip");
+    page.i18nReplace("designertools-esc", "showTip");
   },
 
-  onCancel: function() {
+  onCancel: function(isClick) {
     if(page.dropperActivated) {
       page.dropperDeactivate();
+      page.layerUpper.draw();
+      return;
     }
     else if(page.rulerActivated) {
       page.rulerDeactivate();
-    }
-    else {
-      if(!page.hidden) {
-        page.hide();
-      }
+      page.layerUpper.draw();
+      return;
     }
 
-    page.layerUpper.draw();
+    if(!isClick)
+      return;
+
+    if(page.hidden) {
+      page.show();
+    }
+    else {
+      page.hide();
+    }
   },
 
   init: function() {
@@ -726,11 +759,13 @@ var page = {
         '</div><img id="designertools-close" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALFJREFUeNqMkk0OAUEQhSvE2PgNzmVOYCEWbkTib2QwiMS1LIkDjNe8SiqlJV7yLebVT1dXj8hHYzADDflWC+RgqsYI3EEJdkxQdcCJsQcby4KGEroloA72LrbWLrkLbIn1jqCrRzdB5hIsZ5usqvJIn1xwvLcqpiD5saUy4kkfXP8daRBJ3oBVpKgnvL0NHDheLbK9ZSiYgCeNi9tG2zS8gaGYXyPjm3gFbw7S8PESYACUf0fkQ53xHwAAAABJRU5ErkJggg=="></div></div>')
         .before('<div id="designertools-overlay" style="width: '+page.width+'px; height: '+page.height+'px;"><div id="designertools-stageUpper"></div><div id="designertools-stageLower"></div></div>');
 
+    page.show();
+
     var handlKeyboard = function(e) {
       var keyCode = e.keyCode;
 
       if(keyCode == 27) {   // ESC
-        return page.onCancel();
+        return page.onCancel(false);
       }
     }
 
@@ -750,15 +785,13 @@ var page = {
     page.layerUpper = new Kinetic.Layer();
     page.stageUpper.add(page.layerUpper);
 
-    $('#designertools-esc').click(page.onCancel);
+    $('#designertools-esc').click(function() {
+      page.onCancel(true);
+    });
     $('body').keydown(handlKeyboard);
 
     $('#designertools-close').click(function() {
       $('#designertools-c1').hide();
-      page.dropperDeactivate();
-      page.rulerDeactivate();
-      page.magnifierDeactivate();
-      $('body').unbind('keydown', handlKeyboard);
     });
 
     page.defaults();

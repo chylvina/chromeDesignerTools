@@ -43,5 +43,26 @@
   },
   "optionColorTitle":{
     "message":"Colors"
+  },
+  "rulerActivatedTip":{
+    "message":"Ruler is activated."
+  },
+  "designertoolsActivatedTip":{
+    "message":"Designer tools is activated."
+  },
+  "designertoolsDeactivatedTip":{
+    "message":"Designer tools is deactivated."
+  },
+  "colorpickerActivatedTip":{
+    "message":"Color picker is activated."
+  },
+  "deactivateTip":{
+    "message":"Deactivate(ESC)"
+  },
+  "hideTip":{
+    "message":"Hide"
+  },
+  "showTip":{
+    "message":"Show"
   }
 }
