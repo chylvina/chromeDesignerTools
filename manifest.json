@@ -33,26 +33,6 @@
       "js": [ "js/ed_helper.js" ],
       "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
       "run_at": "document_end"
-    },
-    {
-      "js": [ "inc/jquery-1.7.1.min.js" ],
-      "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
-      "run_at": "document_end"
-    },
-    {
-      "js": [ "inc/jquery-special-scroll.js" ],
-      "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
-      "run_at": "document_end"
-    },
-    {
-      "js": [ "js/vendor/kinetic-v4.6.0.min.js" ],
-      "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
-      "run_at": "document_end"
-    },
-    {
-      "js": [ "edropper2.js" ],
-      "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
-      "run_at": "document_end"
     }
   ],
 

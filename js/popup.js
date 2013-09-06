@@ -1,6 +1,6 @@
 // Google Analytics
 var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-20877394-1']);
+_gaq.push(['_setAccount', 'UA-43827173-1']);
 _gaq.push(['_trackPageview']);
 var bgPage = chrome.extension.getBackgroundPage();
 
@@ -13,9 +13,8 @@ function enableAll() {
 function showTip(tip) {
   $('ul').hide();
   $('hr').hide();
-  $("#tips").show();
+  $("#tips").show().text(tip);
   //i18nReplace("tipContent", tip);
-
   // force resize
   /*function resize() {
     if(document.height < 100)
@@ -26,6 +25,10 @@ function showTip(tip) {
   }
 
   resize();*/
+}
+
+function i18nReplace(id, messageKey) {
+  return $('#' + id + ' .title').text(chrome.i18n.getMessage(messageKey));
 }
 
 function init() {
@@ -47,7 +50,10 @@ function init() {
     $('#vRuler .shortcut').text('Ctrl+Alt+' + HotKey.get('rulerV'));
 
   // localization
-  //i18nReplace("openApp", "openApp");
+  i18nReplace("colorpicker", "colorpicker");
+  i18nReplace("hRuler", "rulerH");
+  i18nReplace("vRuler", "rulerV");
+  i18nReplace("config", "setting");
 
   // event listener
   $('#config').click(function() {
@@ -75,17 +81,17 @@ function init() {
   chrome.tabs.getSelected(null, function (tab) {
     // special chrome pages
     if (tab.url.indexOf('chrome') == 0) {
-      showTip("Chrome doesn't allow extensions to interact with special Chrome pages like this one.");
+      showTip(chrome.i18n.getMessage('tip1'));
       return;
     }
     // chrome gallery
     else if (tab.url.indexOf('https://chrome.google.com/webstore') == 0) {
-      showTip("Chrome doesn't allow extensions to interact with Chrome Web Store.");
+      showTip(chrome.i18n.getMessage('tip2'));
       return;
     }
     // local pages
     else if (tab.url.indexOf('file') == 0) {
-      showTip("Chrome doesn't allow extensions to interact with local pages.");
+      showTip(chrome.i18n.getMessage('tip3'));
       return;
     }
 

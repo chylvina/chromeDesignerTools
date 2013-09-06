@@ -64,5 +64,17 @@
   },
   "showTip":{
     "message":"Show"
+  },
+  "setting": {
+    "message":"Options"
+  },
+  "tip1": {
+    "message":"Chrome doesn't allow extensions to interact with special Chrome pages like this one."
+  },
+  "tip2": {
+    "message":"Chrome doesn't allow extensions to interact with Chrome Web Store."
+  },
+  "tip3": {
+    "message":"Chrome doesn't allow extensions to interact with local pages."
   }
 }

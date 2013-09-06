@@ -38,11 +38,10 @@ var page = {
     chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) {
       switch(req.type) {
         case 'edropper-loaded':
-          sendResponse({});
+          sendResponse({dropperLoaded : true});
           break;
         case 'pickup-activate':
           page.themeColor = req.options.themeColor;
-          console.log(page.themeColor);
           page.dropperActivate();
           break;
         case 'hruler-activate':
@@ -503,10 +502,10 @@ var page = {
     if (page.screenshoting)
       return;
 
-    var center = {x: e.pageX -page.XOffset + 65, y: e.pageY -page.YOffset + 70};
+    var center = {x: e.pageX -page.XOffset + 68, y: e.pageY -page.YOffset + 70};
 
     if ( page.screenWidth - (e.pageX-page.XOffset) < 150 )
-      center.x = e.pageX -page.XOffset - 60;
+      center.x = e.pageX -page.XOffset - 65;
     if ( page.screenHeight - (e.pageY-page.YOffset) < 180 )
       center.y = e.pageY -page.YOffset - 90;
 
@@ -749,13 +748,18 @@ var page = {
   },
 
   init: function() {
+    if (document.body.hasAttribute('designertools_injected')) {
+      return;
+    }
+    document.body.setAttribute('designertools_injected', true);
+
     page.messageListener();
 
     // create overlay div
     $("body").before('<div id="designertools-c1">' +
         '<div id="designertools-c2"><div id="designertools-c3">' +
-        '<span id="designertools-tip">' + "Working" +
-        '</span><span id="designertools-esc">' + 'Hide' +'</span>' +
+        '<span id="designertools-tip">' +
+        '</span><span id="designertools-esc"></span>' +
         '</div><img id="designertools-close" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALFJREFUeNqMkk0OAUEQhSvE2PgNzmVOYCEWbkTib2QwiMS1LIkDjNe8SiqlJV7yLebVT1dXj8hHYzADDflWC+RgqsYI3EEJdkxQdcCJsQcby4KGEroloA72LrbWLrkLbIn1jqCrRzdB5hIsZ5usqvJIn1xwvLcqpiD5saUy4kkfXP8daRBJ3oBVpKgnvL0NHDheLbK9ZSiYgCeNi9tG2zS8gaGYXyPjm3gFbw7S8PESYACUf0fkQ53xHwAAAABJRU5ErkJggg=="></div></div>')
         .before('<div id="designertools-overlay" style="width: '+page.width+'px; height: '+page.height+'px;"><div id="designertools-stageUpper"></div><div id="designertools-stageLower"></div></div>');
 

@@ -24,7 +24,7 @@ $(document).ready(function() {
     $('#rulerH label').text(chrome.i18n.getMessage('rulerH'));
     $('#rulerV label').text(chrome.i18n.getMessage('rulerV'));
 
-    initShoppingAssist();
+    //initShoppingAssist();
     HotKey.setup();
     HotKeySetting.setup();
 
@@ -51,8 +51,8 @@ $(document).ready(function() {
 
   function save() {
     // shopping assist
-    $('#shoppingAssist').prop('checked') ? (localStorage['SERVICE_CONFIRMED'] = "t1")
-    : (localStorage['SERVICE_CONFIRMED'] = "f0");
+    /*$('#shoppingAssist').prop('checked') ? (localStorage['SERVICE_CONFIRMED'] = "t1")
+    : (localStorage['SERVICE_CONFIRMED'] = "f0");*/
 
     return HotKeySetting.save();
   }

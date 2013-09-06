@@ -28,11 +28,6 @@ var bg = {
   // need to null all tab-specific variables
   useTab: function (tab) {
     bg.tab = tab;
-    bg.dropperLoaded = false;
-
-    bg.sendMessage({type: 'edropper-loaded'}, function (res) {
-      bg.dropperLoaded = true;
-    });
   },
 
   sendMessage: function (message, callback) {
@@ -137,19 +132,20 @@ var bg = {
 
   //
   activate: function (callback) {
-    // inject javascript if needed
-    if (bg.dropperLoaded === false) {
-      chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "js/inject.js"}, function () {
+    bg.sendMessage({type: 'edropper-loaded'}, function (res) {
+      if(res && res.dropperLoaded == true) {
         if(callback) {
           callback();
         }
-      });
-    }
-    else {
-      if(callback) {
-        callback();
       }
-    }
+      else {
+        chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "js/inject.js"}, function () {
+          if(callback) {
+            callback();
+          }
+        });
+      }
+    });
   },
 
   hRulerActivate: function() {
@@ -235,7 +231,7 @@ var bg = {
       if (window.localStorage.seenInstalledPage == undefined || window.localStorage.seenInstalledPage === "false") {
         // TODO: for new installs inject ed helper to all tabs
         window.localStorage.seenInstalledPage = true;
-        chrome.tabs.create({url: 'pages/installed.html', selected: true});
+        chrome.tabs.create({url: 'options.html', selected: true});
       }
     }
 

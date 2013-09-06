@@ -3,7 +3,7 @@
     "message":"设计师助手"
   },
   "extDescription":{
-    "message":"为设计师, 前端开发工程师提供帮助的工具箱, 目前包括取色器和标尺. 会后续增加新的功能."
+    "message":"为设计师, 前端开发工程师提供帮助的工具箱, 目前包括取色工具和标尺. 会后续增加新的功能."
   },
   "optionPageTitle":{
     "message":"设计师助手选项"
@@ -21,7 +21,7 @@
     "message":"启用快捷键"
   },
   "colorpicker":{
-    "message":"取色器"
+    "message":"取色工具"
   },
   "rulerH":{
     "message":"横向标尺"
@@ -54,7 +54,7 @@
     "message":"设计师助手已经隐藏."
   },
   "colorpickerActivatedTip":{
-    "message":"取色器正在工作."
+    "message":"取色工具正在工作."
   },
   "deactivateTip":{
     "message":"取消(ESC)"
@@ -64,5 +64,17 @@
   },
   "showTip":{
     "message":"显示"
+  },
+  "setting": {
+    "message":"设置"
+  },
+  "tip1": {
+    "message":"抱歉, 设计师工具无法在此页面使用."
+  },
+  "tip2": {
+    "message":"抱歉, 设计师工具无法在谷歌应用商店页面使用."
+  },
+  "tip3": {
+    "message":"抱歉, 设计师工具目前无法在本地页面使用."
   }
 }

@@ -1,10 +1,6 @@
 var shortcutKey = {
 
   init: function() {
-    if (document.body.hasAttribute('dt_injected')) {
-      return;
-    }
-    document.body.setAttribute('dt_injected', true);
     document.body.addEventListener('keydown', shortcutKey.handleShortcut, false);
   },
 
