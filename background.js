@@ -221,7 +221,7 @@ var bg = {
     // deactivate dropper if tab changed
     chrome.tabs.onSelectionChanged.addListener(function (tabId, selectInfo) {
       if (bg.tab.id == tabId)
-        bg.sendMessage({type: 'pickup-deactivate'}, function () {
+        bg.sendMessage({type: 'cancel'}, function () {
         });
     });
 

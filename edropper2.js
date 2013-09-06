@@ -11,6 +11,10 @@ var page = {
   rulerType: { H: 'h', V: 'v' },
   screenWidth: window.innerWidth,
   screenHeight: window.innerHeight,
+  stage: null,
+  stageUpper: null,
+  stageLower: null,
+  stageCount: 0,
   magnifier: null,
   previewRulerH: null,
   previewRulerV: null,
@@ -56,6 +60,9 @@ var page = {
           ////console.log('background send me updated screenshot');
           page.imageData = req.data;
           page.capture();
+          break;
+        case 'cancel':
+          page.onCancel();
           break;
       }
     });
@@ -150,7 +157,7 @@ var page = {
       return;
 
     // reset cursor changes
-    $("#eye-dropper-overlay").css('cursor','default');
+    $("#designertools-overlay").css('cursor','default');
 
     page.dropperActivated = false;
 
@@ -170,7 +177,7 @@ var page = {
     if (!page.rulerActivated)
       return;
 
-    page.previewRulerH.setPosition(0, e.pageY);
+    page.previewRulerH.setPosition(0, e.pageY -page.YOffset);
   },
 
   setRulerH: function(e) {
@@ -201,7 +208,7 @@ var page = {
     if (!page.rulerActivated)
       return;
 
-    page.previewRulerV.setPosition(e.pageX, 0);
+    page.previewRulerV.setPosition(e.pageX - -page.XOffset, 0);
   },
 
   setRulerV: function(e) {
@@ -289,7 +296,7 @@ var page = {
     page.screenHeight = window.innerHeight;
 
     // also don't forget to set overlay
-    $("#eye-dropper-overlay").css('width',page.width).css('height',page.height);
+    $("#designertools-overlay").css('width',page.width).css('height',page.height);
 
     // call screen chaned
     page.screenChanged();
@@ -298,30 +305,6 @@ var page = {
   // ---------------------------------
   // MISC
   // ---------------------------------
-
-  drawRuler: function(layer, x, y, type, showdetail) {
-    if(type == page.rulerType.H) {
-      page.previewRulerH.setPosition();
-
-      if(showdetail == true) {
-        for(var i = 1; i < page.screenWidth / 10; i ++) {
-          var path = new Kinetic.Path('M ' + i * 10 + ' ' + y + ' L ' + i * 10 + ' ' + (y + 5) + ' z', {
-            left: 0,
-            top: 0,
-            stroke: page.themeColor,
-            strokeWidth: 1,
-            fill: false
-          });
-          layer.add(path);
-        }
-      }
-
-      layer.renderAll();
-    }
-    else if(type == page.rulerType.V) {
-
-    }
-  },
 
   drawColorIndicator: function(layer, centerX, centerY) {
     var color = '#' + (page.pickColor(centerX, centerY).rgbhex).toUpperCase();
@@ -490,6 +473,7 @@ var page = {
     if(page.magnifier) {
       page.magnifier.remove();
     }
+
     document.removeEventListener("mousemove", page.dragMagnifier, false);
   },
 
@@ -497,12 +481,12 @@ var page = {
     if (page.screenshoting)
       return;
 
-    var center = {x: e.pageX + 65, y: e.pageY + 70};
+    var center = {x: e.pageX -page.XOffset + 65, y: e.pageY -page.YOffset + 70};
 
     if ( page.screenWidth - (e.pageX-page.XOffset) < 150 )
-      center.x = e.pageX - 60;
+      center.x = e.pageX -page.XOffset - 60;
     if ( page.screenHeight - (e.pageY-page.YOffset) < 180 )
-      center.y = e.pageY - 90;
+      center.y = e.pageY -page.YOffset - 90;
 
     page.magnifier.setPosition(center.x, center.y);
     var theColor = page.pickColor(e.pageX, e.pageY);
@@ -645,9 +629,13 @@ var page = {
       }
     }
 
+    $('#stageUpper')
+    .css('top', window.scrollY + 'px')
+    .css('left', window.scrollX + 'px');
+
     page.screenshoting = true;
 
-    $("#eye-dropper-overlay").css('cursor','progress')
+    $("#designertools-overlay").css('cursor','progress')
 
     ////console.log('I want new screenshot');
     page.sendMessage({type: 'screenshot'}, function() {});
@@ -692,7 +680,7 @@ var page = {
       // TODO - je nutne refreshnout ctverecek a nastavit mu spravnou barvu
 
       page.screenshoting = false;
-      $("#eye-dropper-overlay").css('cursor','default');
+      $("#designertools-overlay").css('cursor','default');
 
       //page.sendMessage({type: 'debug-tab', image: page.canvas.toDataURL()}, function() {});
     }
@@ -701,14 +689,30 @@ var page = {
 
   show: function() {
     page.hidden = false;
-    $('#eye-dropper-overlay').show();
+    $('#designertools-overlay').show();
     $('#quickmarkup-esc').text('Hide');
   },
 
   hide: function() {
     page.hidden = true;
-    $('#eye-dropper-overlay').hide();
+    $('#designertools-overlay').hide();
     $('#quickmarkup-esc').text('Show');
+  },
+
+  onCancel: function() {
+    if(page.dropperActivated) {
+      page.dropperDeactivate();
+    }
+    else if(page.rulerActivated) {
+      page.rulerDeactivate();
+    }
+    else {
+      if(!page.hidden) {
+        page.hide();
+      }
+    }
+
+    page.layerUpper.draw();
   },
 
   init: function() {
@@ -720,34 +724,33 @@ var page = {
         '<span id="quickmarkup-tip">' + "Working" +
         '</span><span id="quickmarkup-esc">' + 'Hide' +'</span>' +
         '</div><img id="quickmarkup-close" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALFJREFUeNqMkk0OAUEQhSvE2PgNzmVOYCEWbkTib2QwiMS1LIkDjNe8SiqlJV7yLebVT1dXj8hHYzADDflWC+RgqsYI3EEJdkxQdcCJsQcby4KGEroloA72LrbWLrkLbIn1jqCrRzdB5hIsZ5usqvJIn1xwvLcqpiD5saUy4kkfXP8daRBJ3oBVpKgnvL0NHDheLbK9ZSiYgCeNi9tG2zS8gaGYXyPjm3gFbw7S8PESYACUf0fkQ53xHwAAAABJRU5ErkJggg=="></div></div>')
-        .before('<div id="eye-dropper-overlay" style="position: absolute; width: '+page.screenWidth+'px; height: '+page.screenHeight+'px; opacity: 1; background: none; border: none; z-index: 5000;"></div>');
-
-    var onCancel = function() {
-      if(page.dropperActivated) {
-        page.dropperDeactivate();
-      }
-      else if(page.rulerActivated) {
-        page.rulerDeactivate();
-      }
-      else {
-        if(page.hidden) {
-          page.show();
-        }
-        else {
-          page.hide();
-        }
-      }
-    };
+        .before('<div id="designertools-overlay" style="width: '+page.width+'px; height: '+page.height+'px;"><div id="stageUpper"></div><div id="stageLower"></div></div>');
 
     var handlKeyboard = function(e) {
       var keyCode = e.keyCode;
 
       if(keyCode == 27) {   // ESC
-        return onCancel();
+        return page.onCancel();
       }
     }
 
-    $('#quickmarkup-esc').click(onCancel);
+    page.stageLower = new Kinetic.Stage({
+      container: 'stageLower',
+      width: page.width,
+      height: page.height
+    });
+    page.layerLower = new Kinetic.Layer();
+    page.stageLower.add(page.layerLower);
+
+    page.stageUpper = new Kinetic.Stage({
+      container: 'stageUpper',
+      width: page.screenWidth,
+      height: page.screenHeight
+    });
+    page.layerUpper = new Kinetic.Layer();
+    page.stageUpper.add(page.layerUpper);
+
+    $('#quickmarkup-esc').click(page.onCancel);
     $('body').keydown(handlKeyboard);
 
     $('#quickmarkup-close').click(function() {
@@ -757,16 +760,6 @@ var page = {
       page.magnifierDeactivate();
       $('body').unbind('keydown', handlKeyboard);
     });
-
-    var stage = new Kinetic.Stage({
-      container: 'eye-dropper-overlay',
-      width: page.width,
-      height: page.height
-    });
-
-    page.layerUpper = new Kinetic.Layer();
-    page.layerLower = new Kinetic.Layer();
-    stage.add(page.layerLower).add(page.layerUpper);
 
     page.defaults();
   }

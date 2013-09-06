@@ -43,3 +43,19 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* ------------------------------------------ */
+
+#designertools-overlay {
+  position: absolute;
+  opacity: 1;
+  background: none;
+  border: none;
+  z-index: 99999;
+}
+#stageUpper {
+  position: absolute;
+}
+#stageLower {
+  position: absolute;
+}

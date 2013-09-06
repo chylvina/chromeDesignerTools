@@ -9,20 +9,26 @@
   </style>
 </head>
 <body>
-<div id="container"></div>
+<div id="container" style="position: absolute; top: 100px; left: 100px;"></div>
+<script src="../js/vendor/jquery-1.7.1.min.js"></script>
 <script src="../js/vendor/kinetic-v4.6.0.min.js"></script>
 <script defer="defer">
   var stage = new Kinetic.Stage({
     container: 'container',
     width: 578,
-    height: 200
+    height: 400,
+    x: 100,
+    y: 100
   });
 
-  var layer = new Kinetic.Layer();
+  var layer = new Kinetic.Layer({
+    x: -20,
+    width: 10
+  });
 
   var rect = new Kinetic.Rect({
-    x: 239,
-    y: 75,
+    x: 0,
+    y: 0,
     width: 100,
     height: 50,
     fill: '#0066cc',
@@ -49,6 +55,11 @@
 
   // add the layer to the stage
   stage.add(layer);
+
+  $('body').click(function(e){
+    console.log(e);
+    stage.setPosition(200, 0);
+  });
 </script>
 </body>
 </html>
