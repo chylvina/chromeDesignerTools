@@ -502,10 +502,10 @@ var page = {
     if (page.screenshoting)
       return;
 
-    var center = {x: e.pageX -page.XOffset + 68, y: e.pageY -page.YOffset + 70};
+    var center = {x: e.pageX -page.XOffset + 65, y: e.pageY -page.YOffset + 70};
 
     if ( page.screenWidth - (e.pageX-page.XOffset) < 150 )
-      center.x = e.pageX -page.XOffset - 65;
+      center.x = e.pageX -page.XOffset - 60;
     if ( page.screenHeight - (e.pageY-page.YOffset) < 180 )
       center.y = e.pageY -page.YOffset - 90;
 
