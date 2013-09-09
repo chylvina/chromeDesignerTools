@@ -1,6 +1,6 @@
 {
   "name": "__MSG_name__",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "manifest_version": 2,
   "description": "__MSG_extDescription__",
   "default_locale": "en",
@@ -19,7 +19,7 @@
         "19":   "img/icon_19.png",
         "38":   "img/icon_38.png"
     },
-    "default_title": "Eye Dropper",
+    "default_title": "__MSG_name__",
     "default_popup": "popup.html"
   },
 
