@@ -45,9 +45,11 @@ module.exports = function (grunt) {
           dest: '<%= yeoman.dist %>',
           src: [
             '*.{html,js,json,txt,md}',
+            '_locales/**/*',
             'css/*',
             'img/*',
-            'js/*'
+            'js/*',
+            'js/**/*'
           ]
         }]
       }
@@ -62,7 +64,10 @@ module.exports = function (grunt) {
       dist: {
         files: {
           '<%= yeoman.dist %>/js/inject.js': [
-            '<%= yeoman.app %>/js/inject.js'
+            '<%= yeoman.dist %>/js/vendor/jquery-1.7.1.min.js',
+            '<%= yeoman.dist %>/js/vendor/jquery-special-scroll.js',
+            '<%= yeoman.dist %>/js/vendor/kinetic-v4.6.0.js',
+            '<%= yeoman.dist %>/js/edropper2.js',
           ]
         }
       }
@@ -80,7 +85,6 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'jshint',
     'test',
     'build'
   ]);
