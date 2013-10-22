@@ -239,6 +239,13 @@ var bg = {
 
   },
 
+  tabOnUpdateListener: function() {
+    chrome.tabs.onUpdated.addListener(function (tabId) {
+      console.log(tabId);
+      delete injectHash[tabId];
+    });
+  },
+
   init: function () {
     // only if we have support for localStorage
     if (window.localStorage != null) {
@@ -260,6 +267,8 @@ var bg = {
     // act when tab is changed
     // TODO: call only when needed? this is now used also if picker isn't active
     bg.tabOnChangeListener();
+
+    bg.tabOnUpdateListener();
   }
 };
 
