@@ -1,6 +1,6 @@
 // Google Analytics
 var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-43827173-1']);
+_gaq.push(['_setAccount', 'UA-45056740-1']);
 _gaq.push(['_trackPageview']);
 var bgPage = chrome.extension.getBackgroundPage();
 
@@ -90,10 +90,10 @@ function init() {
       return;
     }
     // local pages
-    else if (tab.url.indexOf('file') == 0) {
+   /* else if (tab.url.indexOf('file') == 0) {
       showTip(chrome.i18n.getMessage('tip3'));
       return;
-    }
+    }*/
 
     var insertScript = function () {
       // Google Analytics
