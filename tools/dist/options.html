@@ -1,0 +1,63 @@
+<html ng-app="optionApp">
+<head>
+  <title id="optionPageTitle"></title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="css/options.css"/>
+  <link rel="stylesheet" type="text/css" href="js/vendor/spectrum/spectrum.css">
+  <script src="js/vendor/jquery-1.7.1.min.js"></script>
+  <script src="js/vendor/spectrum/spectrum.js"></script>
+  <script src="js/hotkey_storage.js"></script>
+  <script src="js/options.js"></script>
+</head>
+<body>
+<div class="contentBox">
+  <div id="header">
+    <h1 id="optionTitle"></h1>
+  </div>
+
+  <!-- Shortcut -->
+  <!--<h4 id="shoppingAssistSetting">Shopping Assist Setting</h4>
+
+  <div id="shoppingAssistContainer" style="margin: 2px 0 0 56px;">
+    <input type="checkbox" id="shoppingAssist">
+    <label for="shoppingAssist" id="shoppingAssistText" style="padding-left: 20px;"></label>
+  </div>-->
+
+  <!-- Theme Color -->
+  <h4 id="colorTitle"></h4>
+
+  <div style="margin: 2px 0 0 56px;">
+    <label id="colorTip" style="padding-left: 20px;"></label>
+    <input id='spectrum' />
+  </div>
+
+  <!-- Screen Shot -->
+  <div id="shortcutSettingDiv" style="margin: 0 0 5px 0">
+    <h4 id="shorcutSetting"></h4>
+
+    <div style="margin: 2px 0 0 56px">
+      <input type="checkbox" id="settingShortcut">
+      <label for="settingShortcut" id="settingShortcutText"></label>
+    </div>
+    <div id="hot-key-setting">
+      <span id="colorpicker" class="hot-key">
+        <label for="colorpicker" class="capture-text">asdasd</label>
+        <span>Ctrl+Alt+<select></select></span>
+      </span>
+      <span id="rulerH" class="hot-key">
+        <label for="rulerH" class="capture-text"></label>
+        <span>Ctrl+Alt+<select></select></span>
+      </span>
+      <span id="rulerV" class="hot-key">
+        <label class="capture-text"></label>
+        <span>Ctrl+Alt+<select></select></span>
+      </span>
+    </div>
+    <div id="error-info"></div>
+  </div>
+  <div class="closeBtn">
+    <button id="saveAndClose"></button>
+  </div>
+</div>
+</body>
+</html>

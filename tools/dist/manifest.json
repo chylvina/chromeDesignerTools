@@ -1,0 +1,51 @@
+{
+  "name": "__MSG_name__",
+  "version": "1.1.1",
+  "manifest_version": 2,
+  "description": "__MSG_extDescription__",
+  "default_locale": "en",
+  "background": {
+      "page": "background.html",
+      "persistent": true
+  },
+  "options_page": "options.html",
+
+  "icons": {
+    "48": "img/icon_48.png",
+    "128": "img/icon_128.png"
+  },
+  "browser_action": {
+    "default_icon": {
+        "19":   "img/icon_19.png",
+        "38":   "img/icon_38.png"
+    },
+    "default_title": "__MSG_name__",
+    "default_popup": "popup.html"
+  },
+
+  "content_scripts": [
+    {
+      "css": [ "css/inject.css" ],
+      "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
+      "run_at": "document_end"
+    },
+    {
+      "js": [ "js/ed_helper.js"],
+      "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
+      "run_at": "document_end"
+    }
+  ],
+
+  "permissions": [ "tabs", "http://*/*", "https://*/*", "\u003Call_urls\u003E" ],
+
+  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+
+  "web_accessible_resources": [
+      "inc/jquery-1.7.1.min.js",
+      "inc/jquery-special-scroll.js",
+      "edropper2.js",
+      "inject/anchor-cursor-default.css",
+      "inject/anchor-cursor-crosshair.css",
+      "inject/edropper2.css"
+  ]
+}
