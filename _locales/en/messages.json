@@ -75,6 +75,6 @@
     "message":"Chrome doesn't allow extensions to interact with Chrome Web Store."
   },
   "tip3": {
-    "message":"Chrome doesn't allow extensions to interact with local pages."
+    "message":"Designer Tools need 'Allow access to file URLs' permission. <a style='color: #0066cc' href='http://quick-markup.com/p/52663fcf6b3ce' target='_blank'>Refer to this page.</a>"
   }
 }

@@ -13,7 +13,7 @@ function enableAll() {
 function showTip(tip) {
   $('ul').hide();
   $('hr').hide();
-  $("#tips").show().text(tip);
+  $("#tips").show().html(tip);
   //i18nReplace("tipContent", tip);
   // force resize
   /*function resize() {
@@ -79,22 +79,6 @@ function init() {
 
   // check is capturable
   chrome.tabs.getSelected(null, function (tab) {
-    // special chrome pages
-    if (tab.url.indexOf('chrome') == 0) {
-      showTip(chrome.i18n.getMessage('tip1'));
-      return;
-    }
-    // chrome gallery
-    else if (tab.url.indexOf('https://chrome.google.com/webstore') == 0) {
-      showTip(chrome.i18n.getMessage('tip2'));
-      return;
-    }
-    // local pages
-   /* else if (tab.url.indexOf('file') == 0) {
-      showTip(chrome.i18n.getMessage('tip3'));
-      return;
-    }*/
-
     var insertScript = function () {
       // Google Analytics
       var ga = document.createElement('script');
@@ -103,9 +87,33 @@ function init() {
       ga.src = 'https://ssl.google-analytics.com/ga.js';
       var s = document.getElementsByTagName('script')[0];
       s.parentNode.insertBefore(ga, s);
-    }
-    setTimeout(insertScript, 500);
+    };
 
+    // special chrome pages
+    if (tab.url.indexOf('chrome') == 0) {
+      showTip(chrome.i18n.getMessage('tip1'));
+      return;
+    }
+    // chrome gallery
+    if (tab.url.indexOf('https://chrome.google.com/webstore') == 0) {
+      showTip(chrome.i18n.getMessage('tip2'));
+      return;
+    }
+    // local pages
+    if (tab.url.indexOf('file') == 0) {
+      showTip(chrome.i18n.getMessage('tip3'));
+      chrome.tabs.sendMessage(tab.id, {msg:'is_helper_load'},
+        function (response) {
+          if (response && response.msg == 'helper_loaded') {
+            enableAll();
+            setTimeout(insertScript, 500);
+            bgPage.bg.useTab(tab);
+          }
+        });
+      return;
+    }
+
+    setTimeout(insertScript, 500);
     bgPage.bg.useTab(tab);
   });
 }

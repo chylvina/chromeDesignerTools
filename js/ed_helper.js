@@ -2,6 +2,12 @@ var shortcutKey = {
 
   init: function() {
     document.body.addEventListener('keydown', shortcutKey.handleShortcut, false);
+
+    chrome.runtime.onMessage.addListener(function(request, sender, response) {
+      if (request.msg == 'is_helper_load') {
+        response({msg: 'helper_loaded'});
+      }
+    });
   },
 
   isThisPlatform: function(operationSystem) {

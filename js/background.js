@@ -12,6 +12,8 @@ function inArray(value, array) {
   return -1;
 }
 
+var injectHash = {};
+
 // base bg object
 var bg = {
   tab: 0,
@@ -132,7 +134,21 @@ var bg = {
 
   //
   activate: function (callback) {
-    bg.sendMessage({type: 'edropper-loaded'}, function (res) {
+    if(injectHash[bg.tab.id] == true) {
+      if(callback) {
+        callback();
+      }
+    }
+    else {
+      chrome.tabs.executeScript(bg.tab.id, {allFrames: false, file: "js/inject.js"}, function () {
+        injectHash[bg.tab.id] = true;
+        if(callback) {
+          callback();
+        }
+      });
+    }
+
+    /*bg.sendMessage({type: 'edropper-loaded'}, function (res) {
       if(res && res.dropperLoaded == true) {
         if(callback) {
           callback();
@@ -145,7 +161,7 @@ var bg = {
           }
         });
       }
-    });
+    });*/
   },
 
   hRulerActivate: function() {

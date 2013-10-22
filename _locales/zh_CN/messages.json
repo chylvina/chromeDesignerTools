@@ -75,6 +75,6 @@
     "message":"抱歉, 设计师工具无法在谷歌应用商店页面使用."
   },
   "tip3": {
-    "message":"抱歉, 设计师工具目前无法在本地页面使用."
+    "message":"您需要开启'允许访问文件网址'权限才能设计本地页面. <a style='color: #0066cc' href='http://quick-markup.com/p/52663fcf6b3ce' target='_blank'>参考此页面</a>"
   }
 }
