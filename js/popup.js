@@ -72,7 +72,7 @@ function init() {
     window.close();
   });
   $('#vRuler').click(function() {
-    _gaq.push(['_trackEvent', 'hRuler', 'clicked']);
+    _gaq.push(['_trackEvent', 'vRuler', 'clicked']);
     bgPage.bg.vRulerActivate();
     window.close();
   });
