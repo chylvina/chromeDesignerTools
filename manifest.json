@@ -33,10 +33,15 @@
       "js": [ "js/ed_helper.js"],
       "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
       "run_at": "document_end"
-    }
+    },
+      {
+          "js": [ "js/links.js"],
+          "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
+          "run_at": "document_end"
+      }
   ],
 
-  "permissions": [ "tabs", "http://*/*", "https://*/*", "\u003Call_urls\u003E" ],
+  "permissions": [ "tabs", "http://*/*", "https://*/*", "\u003Call_urls\u003E", "storage" ],
 
   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
 
