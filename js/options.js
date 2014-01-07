@@ -7,7 +7,7 @@ $(document).ready(function () {
     }
 
     function i18nReplace(id, messageid) {
-        return $('#' + id).text(chrome.i18n.getMessage(messageid || id));
+        return $('#' + id).html(chrome.i18n.getMessage(messageid || id));
     }
 
     function init() {

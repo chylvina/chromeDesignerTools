@@ -1,6 +1,6 @@
 {
   "name":{
-    "message":"Color Picker"
+    "message":"Designer Tools"
   },
   "extDescription":{
     "message":"A set of useful tools including eyedropper and ruler for web designers, frontend developers, etc. Will add more tools later."
@@ -12,7 +12,7 @@
     "message":"We need your support"
   },
   "shoppingAssistTip":{
-    "message":"You only need to enable this to support us. Nothing else. We are not going to show ads to annoy you, you don't need to pay us for anything."
+    "message":"You only need to enable this to support us. Nothing else. We are not going to show ads to annoy you, you don't need to pay us for anything. <a href='http://www.viglink.com/how-it-works' target='_blank' style='text-decoration: none;'>Learn more.</a>"
   },
   "shortcut":{
     "message":"Shortcut"

@@ -67,7 +67,7 @@ module.exports = function (grunt) {
             '<%= yeoman.dist %>/js/vendor/jquery-1.7.1.min.js',
             '<%= yeoman.dist %>/js/vendor/jquery-special-scroll.js',
             '<%= yeoman.dist %>/js/vendor/kinetic-v4.6.0.js',
-            '<%= yeoman.dist %>/js/edropper2.js',
+            '<%= yeoman.dist %>/js/edropper2.js'
           ]
         }
       }

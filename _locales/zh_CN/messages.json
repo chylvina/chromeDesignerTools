@@ -1,6 +1,6 @@
 {
   "name":{
-    "message":"取色器"
+    "message":"设计师助手"
   },
   "extDescription":{
     "message":"为设计师, 前端开发工程师提供帮助的工具箱, 目前包括取色工具和标尺. 会后续增加新的功能."
@@ -12,7 +12,7 @@
     "message":"我们需要您的支持"
   },
   "shoppingAssistTip":{
-    "message":"您只需开启这个选项来支持我们，无需其它。您无需付费或捐款，也不会有恼人的植入广告。"
+    "message": "您只需开启这个选项来支持我们，无需其它。您无需付费或捐款，也不会有恼人的植入广告。<a href='http://www.viglink.com/how-it-works' target='_blank' style='text-decoration: none;'>了解更多</a>"
   },
   "shortcut":{
     "message":"快捷键"

@@ -251,9 +251,9 @@ var bg = {
     if (window.localStorage != null) {
 
       // show installed or updated page
-      if (window.localStorage.seenInstalledPage == undefined || window.localStorage.seenInstalledPage === "false") {
+      if (window.localStorage.firstInstall == undefined || window.localStorage.firstInstall === "false") {
         // TODO: for new installs inject ed helper to all tabs
-        window.localStorage.seenInstalledPage = true;
+        window.localStorage.firstInstall = true;
         chrome.tabs.create({url: 'options.html', selected: true});
       }
     }
