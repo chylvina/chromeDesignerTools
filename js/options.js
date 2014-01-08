@@ -13,8 +13,6 @@ $(document).ready(function () {
     function init() {
         i18nReplace('optionPageTitle');
         i18nReplace('optionTitle', 'name');
-        i18nReplace('shoppingAssistSetting');
-        i18nReplace('shoppingAssistText', 'shoppingAssistTip');
         i18nReplace('shorcutSetting', 'shortcut');
         i18nReplace('settingShortcutText', 'enableShortcut');
         i18nReplace('saveAndClose', 'saveAndClose');
@@ -24,7 +22,6 @@ $(document).ready(function () {
         $('#rulerH label').text(chrome.i18n.getMessage('rulerH'));
         $('#rulerV label').text(chrome.i18n.getMessage('rulerV'));
 
-        initShoppingAssist();
         HotKey.setup();
         HotKeySetting.setup();
 
@@ -50,35 +47,7 @@ $(document).ready(function () {
     }
 
     function save() {
-        // shopping assist
-        $('#shoppingAssist').prop('checked') ? chrome.storage.sync.set({'SERVICE_CONFIRMED': 't1'})
-         : chrome.storage.sync.set({'SERVICE_CONFIRMED': 'f0'});
-
         return HotKeySetting.save();
-    }
-
-    function initShoppingAssist() {
-        chrome.storage.sync.get('SERVICE_CONFIRMED', function(items) {
-            if(items.SERVICE_CONFIRMED === 'f0') {
-                $('#shoppingAssist').prop('checked', false);
-            }
-            else {
-                $('#shoppingAssist').prop('checked', true);
-            }
-
-            updateSAH();
-        });
-
-        $('#shoppingAssist').click(updateSAH);
-    }
-
-    function updateSAH() {
-        if ($('#shoppingAssist').prop('checked') == true) {
-            shoppingAssistContainer.style.background = 'url(../img/heart.png) no-repeat 26px 2px';
-        }
-        else {
-            shoppingAssistContainer.style.background = 'url(../img/heart_gray.png) no-repeat 26px 2px';
-        }
     }
 
     var HotKeySetting = (function () {
@@ -151,9 +120,6 @@ $(document).ready(function () {
                 else {
                     HotKey.disable(bg);
                 }
-
-                $('shoppingAssist').checked ? (localStorage['SERVICE_CONFIRMED'] = "t1")
-                    : (localStorage['SERVICE_CONFIRMED'] = "f0");
 
                 return result;
             },

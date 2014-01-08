@@ -1,6 +1,6 @@
 {
   "name": "__MSG_name__",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "manifest_version": 2,
   "description": "__MSG_extDescription__",
   "default_locale": "en",
@@ -33,12 +33,7 @@
       "js": [ "js/ed_helper.js"],
       "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
       "run_at": "document_end"
-    },
-      {
-          "js": [ "js/links.js"],
-          "matches": [ "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
-          "run_at": "document_end"
-      }
+    }
   ],
 
   "permissions": [ "tabs", "http://*/*", "https://*/*", "\u003Call_urls\u003E", "storage" ],
