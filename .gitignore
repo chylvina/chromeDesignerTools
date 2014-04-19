@@ -3,3 +3,4 @@ inc/jPicker/images/Thumbs.db
 .idea/*
 node_modules
 dist
+.DS_Store

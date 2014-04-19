@@ -11,9 +11,6 @@
   "shoppingAssistSetting":{
     "message":"We need your support"
   },
-  "shoppingAssistTip":{
-    "message":"You only need to enable this to support us. Nothing else. We are not going to show ads to annoy you, you don't need to pay us for anything. <a href='http://www.viglink.com/how-it-works' target='_blank' style='text-decoration: none;'>Learn more.</a>"
-  },
   "shortcut":{
     "message":"Shortcut"
   },
